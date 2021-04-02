@@ -5,23 +5,14 @@ import (
 	"github.com/friends-management/database"
 	"github.com/joho/godotenv"
 	"log"
-	"net"
+	"net/http"
 	"os"
 )
 
 func main()  {
-	address := ":8081"
-	network, err := net.Listen("tcp", address)
+	PORT := ":8081"
 
-	fmt.Println(network.Addr(), err)
-
-	if err != nil {
-		// Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
-		// /src/log/log.go:208
-		log.Fatalf("Error: %s", err.Error())
-	}
-
-	err = godotenv.Load()
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -37,4 +28,9 @@ func main()  {
 	}
 
 	defer db.Conn.Close()
+
+	fmt.Printf("Starting server at port 8081\n")
+	if err := http.ListenAndServe(PORT, nil); err != nil {
+		log.Fatal(err)
+	}
 }
