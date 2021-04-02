@@ -29,6 +29,10 @@ func main()  {
 
 	defer db.Conn.Close()
 
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request){
+		fmt.Fprintf(w, "Hello!")
+	})
+
 	fmt.Printf("Starting server at port 8081\n")
 	if err := http.ListenAndServe(PORT, nil); err != nil {
 		log.Fatal(err)
