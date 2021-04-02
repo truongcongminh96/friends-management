@@ -13,6 +13,8 @@ func main()  {
 	address := ":8081"
 	network, err := net.Listen("tcp", address)
 
+	fmt.Println(network.Addr(), err)
+
 	if err != nil {
 		// Fatalf is equivalent to l.Printf() followed by a call to os.Exit(1).
 		// /src/log/log.go:208
@@ -28,7 +30,11 @@ func main()  {
 	dbPassword := os.Getenv("POSTGRES_PASSWORD")
 	dbName := os.Getenv("POSTGRES_DB")
 
-	database.ConnectDB(dbUser, dbPassword, dbName)
+	db, err := database.ConnectDB(dbUser, dbPassword, dbName)
 
-	fmt.Println(network.Addr(), err)
+	if err != nil {
+		log.Fatalf("Could not set up database: %v", err)
+	}
+
+	defer db.Conn.Close()
 }
