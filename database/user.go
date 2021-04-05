@@ -18,3 +18,12 @@ func (db Database) GetUserList() (*models.UserList, error) {
 	}
 	return list, nil
 }
+
+func (db Database) CreateUser(email string) error {
+	query := `INSERT INTO users (email) VALUES ($1);`
+	_, err := db.Conn.Exec(query, email)
+	if err != nil {
+		return err
+	}
+	return nil
+}
