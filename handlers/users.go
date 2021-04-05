@@ -1,16 +1,20 @@
 package handlers
 
 import (
+	"encoding/json"
+
 	"github.com/friends-management/models"
+	"github.com/friends-management/service"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
 )
 
 func users(router chi.Router) {
+	db := service.DbInstance{Db: dbInstance}
 	router.Get("/", getHomeRoot)
 	router.Get("/user_list", getUserList)
-	router.Post("/registration", createUser)
+	router.Post("/registration", createUser(db))
 }
 
 func getHomeRoot(w http.ResponseWriter, r *http.Request) {
@@ -28,19 +32,20 @@ func getUserList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func createUser(w http.ResponseWriter, r *http.Request) {
-	user := &models.User{}
-	if err := render.Bind(r, user); err != nil {
-		render.Render(w, r, ErrBadRequest)
-		return
-	}
-	if err := dbInstance.CreateUser(user.Email); err != nil {
-		render.Render(w, r, ErrorRenderer(err))
-		return
-	}
+// https://golang.org/src/net/http/example_test.go
+func createUser(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.UserRequest{}
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+		response, err := service.CreateUser(req)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
 
-	if err := render.Render(w, r, user); err != nil {
-		render.Render(w, r, ServerErrorRenderer(err))
-		return
+		json.NewEncoder(w).Encode(response)
 	}
 }

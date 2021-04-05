@@ -13,20 +13,24 @@ type User struct {
 	Blocked      []string `json:"blocked"`
 }
 
-func (u User) Render(w http.ResponseWriter, r *http.Request) error {
-	return nil
+type UserList struct {
+	Users []User
 }
 
-func (u User) Bind(r *http.Request) error {
-	if u.Email == "" {
+type UserRequest struct {
+	Email string `json:"email"`
+}
+
+func (email *UserRequest) Bind(r *http.Request) error {
+	if email.Email == "" {
 		log.Print("email is a required field")
 		return fmt.Errorf("email is a required field")
 	}
 	return nil
 }
 
-type UserList struct {
-	Users []User
+type ResultResponse struct {
+	Success bool `json:"success"`
 }
 
 func (u UserList) Render(w http.ResponseWriter, r *http.Request) error {
