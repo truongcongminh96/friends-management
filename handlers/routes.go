@@ -29,6 +29,7 @@ func users(router chi.Router) {
 	router.Post("/retrieveFriendList", retrieveFriendList(db))
 	router.Post("/commonFriends", getCommonFriendsList(db))
 	router.Post("/subscribe", createSubscribe(db))
+	router.Post("/blockFriend", createBlockFriend(db))
 }
 
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {

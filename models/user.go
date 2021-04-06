@@ -105,3 +105,20 @@ func (s SubscriptionRequest) Bind(r *http.Request) error {
 	}
 	return nil
 }
+
+type BlockRequest struct {
+	Requestor string `json:"requestor"`
+	Target    string `json:"target"`
+}
+
+func (b BlockRequest) Bind(r *http.Request) error {
+	requestor := b.Requestor
+	target := b.Target
+	if requestor == "" || target == "" {
+		return fmt.Errorf("email is a required field")
+	}
+	if requestor == target {
+		log.Print("can't block with yourself")
+	}
+	return nil
+}

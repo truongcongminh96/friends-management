@@ -16,6 +16,7 @@ type IUserService interface {
 	RetrieveFriendList(email string) (*models.FriendListResponse, error)
 	GetCommonFriendsList(req []string) (*models.FriendListResponse, error)
 	CreateSubscribe(req *models.SubscriptionRequest) (*models.ResultResponse, error)
+	CreateBlockFriend(req *models.BlockRequest) (*models.ResultResponse, error)
 }
 
 func (db DbInstance) GetUserList() (*models.UserListResponse, error) {
@@ -100,6 +101,17 @@ func (db DbInstance) CreateSubscribe(req *models.SubscriptionRequest) (*models.R
 	if err := db.Db.CreateSubscribe(req.Requestor, req.Target); err != nil {
 		return response, err
 	}
+	response.Success = true
+	return response, nil
+}
+
+func (db DbInstance) CreateBlockFriend(req *models.BlockRequest) (*models.ResultResponse, error) {
+	response := &models.ResultResponse{}
+
+	if err := db.Db.CreateBlockFriend(req.Requestor, req.Target); err != nil {
+		return response, err
+	}
+
 	response.Success = true
 	return response, nil
 }

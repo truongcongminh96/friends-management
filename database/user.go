@@ -73,3 +73,12 @@ func (db Database) CreateSubscribe(requestor, target string) error {
 	}
 	return nil
 }
+
+func (db Database) CreateBlockFriend(requestor, target string) error {
+	query := `INSERT INTO block (requestor, target) VALUES ($1, $2);`
+	_, err := db.Conn.Exec(query, requestor, target)
+	if err != nil {
+		return err
+	}
+	return nil
+}

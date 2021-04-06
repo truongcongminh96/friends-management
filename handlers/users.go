@@ -122,7 +122,38 @@ func createSubscribe(service service.IUserService) http.HandlerFunc {
 			render.Render(w, r, ErrBadRequest)
 			return
 		}
+
+		if !isEmailValid(req.Requestor) || !isEmailValid(req.Target) {
+			log.Println("One Email request is invalid")
+			_ = render.Render(w, r, ErrBadRequest)
+			return
+		}
+
 		response, err := service.CreateSubscribe(req)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+
+		json.NewEncoder(w).Encode(response)
+	}
+}
+
+func createBlockFriend(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.BlockRequest{}
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		if !isEmailValid(req.Requestor) || !isEmailValid(req.Target) {
+			log.Println("One Email request is invalid")
+			_ = render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		response, err := service.CreateBlockFriend(req)
 		if err != nil {
 			render.Render(w, r, ServerErrorRenderer(err))
 			return
