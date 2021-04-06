@@ -64,3 +64,12 @@ func (db Database) RetrieveFriendListByEmail(email string) (*models.FriendListRe
 	}
 	return friendList, nil
 }
+
+func (db Database) CreateSubscribe(requestor, target string) error {
+	query := `INSERT INTO subscription (requestor, target) VALUES ($1, $2);`
+	_, err := db.Conn.Exec(query, requestor, target)
+	if err != nil {
+		return err
+	}
+	return nil
+}

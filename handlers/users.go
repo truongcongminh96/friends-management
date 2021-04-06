@@ -114,3 +114,20 @@ func getCommonFriendsList(service service.IUserService) http.HandlerFunc {
 		json.NewEncoder(w).Encode(response)
 	}
 }
+
+func createSubscribe(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.SubscriptionRequest{}
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+		response, err := service.CreateSubscribe(req)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+
+		json.NewEncoder(w).Encode(response)
+	}
+}

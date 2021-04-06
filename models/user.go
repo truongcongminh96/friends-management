@@ -88,3 +88,20 @@ func (c CommonFriendsListRequest) Bind(r *http.Request) error {
 	}
 	return nil
 }
+
+type SubscriptionRequest struct {
+	Requestor string `json:"requestor"`
+	Target    string `json:"target"`
+}
+
+func (s SubscriptionRequest) Bind(r *http.Request) error {
+	requestor := s.Requestor
+	target := s.Target
+	if requestor == "" || target == "" {
+		return fmt.Errorf("email is a required field")
+	}
+	if requestor == target {
+		log.Print("can't subscribe with yourself")
+	}
+	return nil
+}
