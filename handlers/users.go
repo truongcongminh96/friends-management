@@ -9,14 +9,15 @@ import (
 	"net/http"
 )
 
-func getUserList(w http.ResponseWriter, r *http.Request) {
-	users, err := dbInstance.GetUserList()
-	if err != nil {
-		_ = render.Render(w, r, ServerErrorRenderer(err))
-		return
-	}
-	if err := render.Render(w, r, users); err != nil {
-		_ = render.Render(w, r, ErrorRenderer(err))
+func getUserList(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		response, err := service.GetUserList()
+
+		if err != nil {
+			_ = render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+		json.NewEncoder(w).Encode(response)
 	}
 }
 
@@ -44,5 +45,48 @@ func createUser(service service.IUserService) http.HandlerFunc {
 		}
 
 		_ = json.NewEncoder(w).Encode(response)
+	}
+}
+
+func createFriendConnection(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.FriendConnectionRequest{}
+
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		response, err := service.CreateFriendConnection(req.Friends)
+
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+		json.NewEncoder(w).Encode(response)
+	}
+}
+
+func retrieveFriendList(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.FriendListRequest{}
+
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		if !isEmailValid(req.Email) {
+			log.Println("Email address is invalid")
+			_ = render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		response, err := service.RetrieveFriendList(req.Email)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+		json.NewEncoder(w).Encode(response)
 	}
 }

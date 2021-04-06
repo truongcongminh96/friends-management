@@ -23,8 +23,10 @@ func NewHandler(db database.Database) http.Handler {
 
 func users(router chi.Router) {
 	db := service.DbInstance{Db: dbInstance}
-	router.Get("/user_list", getUserList)
+	router.Get("/user_list", getUserList(db))
 	router.Post("/registration", createUser(db))
+	router.Post("/friendConnection", createFriendConnection(db))
+	router.Post("/retrieveFriendList", retrieveFriendList(db))
 }
 
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
