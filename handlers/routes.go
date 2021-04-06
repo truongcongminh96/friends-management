@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/friends-management/database"
+	"github.com/friends-management/service"
 	"net/http"
 
 	_ "github.com/friends-management/database"
@@ -16,14 +17,22 @@ func NewHandler(db database.Database) http.Handler {
 	dbInstance = db
 	router.MethodNotAllowed(methodNotAllowedHandler)
 	router.NotFound(notFoundHandler)
-	router.Route("/", users)
+	router.Route("/api/v1/", users)
 	return router
 }
+
+func users(router chi.Router) {
+	db := service.DbInstance{Db: dbInstance}
+	router.Get("/user_list", getUserList)
+	router.Post("/registration", createUser(db))
+}
+
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(405)
 	render.Render(w, r, ErrMethodNotAllowed)
 }
+
 func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(400)

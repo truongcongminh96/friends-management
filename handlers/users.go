@@ -5,21 +5,9 @@ import (
 
 	"github.com/friends-management/models"
 	"github.com/friends-management/service"
-	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"
 )
-
-func users(router chi.Router) {
-	db := service.DbInstance{Db: dbInstance}
-	router.Get("/", getHomeRoot)
-	router.Get("/user_list", getUserList)
-	router.Post("/registration", createUser(db))
-}
-
-func getHomeRoot(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("hi"))
-}
 
 func getUserList(w http.ResponseWriter, r *http.Request) {
 	users, err := dbInstance.GetUserList()
