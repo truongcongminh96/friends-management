@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"encoding/json"
-
 	"github.com/friends-management/models"
 	"github.com/friends-management/service"
 	"github.com/go-chi/render"
+	"log"
 	"net/http"
 )
 
@@ -24,10 +24,18 @@ func getUserList(w http.ResponseWriter, r *http.Request) {
 func createUser(service service.IUserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &models.UserRequest{}
+
 		if err := render.Bind(r, req); err != nil {
 			render.Render(w, r, ErrBadRequest)
 			return
 		}
+
+		if !isEmailValid(req.Email) {
+			log.Println("Email address is invalid")
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
 		response, err := service.CreateUser(req)
 		if err != nil {
 			render.Render(w, r, ServerErrorRenderer(err))

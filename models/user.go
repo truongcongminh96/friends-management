@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -22,10 +20,6 @@ type UserRequest struct {
 }
 
 func (email *UserRequest) Bind(r *http.Request) error {
-	if email.Email == "" {
-		log.Print("email is a required field")
-		return fmt.Errorf("email is a required field")
-	}
 	return nil
 }
 
