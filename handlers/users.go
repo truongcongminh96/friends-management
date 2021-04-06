@@ -12,36 +12,37 @@ import (
 func getUserList(w http.ResponseWriter, r *http.Request) {
 	users, err := dbInstance.GetUserList()
 	if err != nil {
-		render.Render(w, r, ServerErrorRenderer(err))
+		_ = render.Render(w, r, ServerErrorRenderer(err))
 		return
 	}
 	if err := render.Render(w, r, users); err != nil {
-		render.Render(w, r, ErrorRenderer(err))
+		_ = render.Render(w, r, ErrorRenderer(err))
 	}
 }
 
 // https://golang.org/src/net/http/example_test.go
+// https://github.com/golang/go/issues/20803
 func createUser(service service.IUserService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := &models.UserRequest{}
 
 		if err := render.Bind(r, req); err != nil {
-			render.Render(w, r, ErrBadRequest)
+			_ = render.Render(w, r, ErrBadRequest)
 			return
 		}
 
 		if !isEmailValid(req.Email) {
 			log.Println("Email address is invalid")
-			render.Render(w, r, ErrBadRequest)
+			_ = render.Render(w, r, ErrBadRequest)
 			return
 		}
 
-		response, err := service.CreateUser(req)
+		response, err := service.CreateUser(req.Email)
 		if err != nil {
-			render.Render(w, r, ServerErrorRenderer(err))
+			_ = render.Render(w, r, ServerErrorRenderer(err))
 			return
 		}
 
-		json.NewEncoder(w).Encode(response)
+		_ = json.NewEncoder(w).Encode(response)
 	}
 }

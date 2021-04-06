@@ -10,12 +10,12 @@ type DbInstance struct {
 }
 
 type IUserService interface {
-	CreateUser(req *models.UserRequest) (*models.ResultResponse, error)
+	CreateUser(email string) (*models.ResultResponse, error)
 }
 
-func (db DbInstance) CreateUser(req *models.UserRequest) (*models.ResultResponse, error) {
+func (db DbInstance) CreateUser(email string) (*models.ResultResponse, error) {
 	response := &models.ResultResponse{}
-	if err := db.Db.CreateUser(req.Email); err != nil {
+	if err := db.Db.CreateUser(email); err != nil {
 		return response, err
 	}
 	response.Success = true
