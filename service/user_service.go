@@ -10,10 +10,11 @@ type DbInstance struct {
 }
 
 type IUserService interface {
+	GetUserList() (*models.UserListResponse, error)
 	CreateUser(email string) (*models.ResultResponse, error)
 	CreateFriendConnection(req []string) (*models.ResultResponse, error)
 	RetrieveFriendList(email string) (*models.FriendListResponse, error)
-	GetUserList() (*models.UserListResponse, error)
+	GetCommonFriendsList(req []string) (*models.FriendListResponse, error)
 }
 
 func (db DbInstance) GetUserList() (*models.UserListResponse, error) {
@@ -41,10 +42,8 @@ func (db DbInstance) CreateUser(email string) (*models.ResultResponse, error) {
 func (db DbInstance) CreateFriendConnection(req []string) (*models.ResultResponse, error) {
 	response := &models.ResultResponse{}
 	if err := db.Db.CreateFriendConnection(req); err != nil {
-		if err != nil {
-			response.Success = false
-			return response, err
-		}
+		response.Success = false
+		return response, err
 	}
 	response.Success = true
 	return response, nil
@@ -52,12 +51,44 @@ func (db DbInstance) CreateFriendConnection(req []string) (*models.ResultRespons
 
 func (db DbInstance) RetrieveFriendList(email string) (*models.FriendListResponse, error) {
 	response := &models.FriendListResponse{}
-	rep, err := db.Db.RetrieveFriendListByEmail(email)
+	data, err := db.Db.RetrieveFriendListByEmail(email)
 	if err != nil {
 		return response, err
 	}
 	response.Success = true
-	response.Friends = rep.Friends
-	response.Count = len(rep.Friends)
+	response.Friends = data.Friends
+	response.Count = len(data.Friends)
+	return response, nil
+}
+
+func (db DbInstance) GetCommonFriendsList(email []string) (*models.FriendListResponse, error) {
+	response := &models.FriendListResponse{}
+
+	friendListEmailOne, err := db.Db.RetrieveFriendListByEmail(email[0])
+	if err != nil {
+		return response, err
+	}
+
+	friendListEmailTwo, err := db.Db.RetrieveFriendListByEmail(email[1])
+	if err != nil {
+		return response, err
+	}
+
+	var mutualFriends []string
+
+	// mutualFriends = append(friendListEmailOne.Friends, friendListEmailTwo.Friends...)
+	// need to improve
+	for _, friendOne := range friendListEmailOne.Friends {
+		for _, friendTwo := range friendListEmailTwo.Friends {
+			if friendOne == friendTwo {
+				mutualFriends = append(mutualFriends, friendOne)
+			}
+		}
+	}
+
+	response.Success = true
+	response.Friends = mutualFriends
+	response.Count = len(mutualFriends)
+
 	return response, nil
 }

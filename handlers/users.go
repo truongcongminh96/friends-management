@@ -90,3 +90,27 @@ func retrieveFriendList(service service.IUserService) http.HandlerFunc {
 		json.NewEncoder(w).Encode(response)
 	}
 }
+
+func getCommonFriendsList(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.CommonFriendsListRequest{}
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		if !isEmailValid(req.Friends[0]) || !isEmailValid(req.Friends[1]) {
+			log.Println("One Email request is invalid")
+			_ = render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		response, err := service.GetCommonFriendsList(req.Friends)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+
+		json.NewEncoder(w).Encode(response)
+	}
+}

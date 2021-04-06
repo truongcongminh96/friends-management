@@ -75,3 +75,16 @@ type FriendListResponse struct {
 	Friends []string `json:"friends"`
 	Count   int      `json:"count"`
 }
+
+type CommonFriendsListRequest struct {
+	Friends []string `json:"friends"`
+}
+
+func (c CommonFriendsListRequest) Bind(r *http.Request) error {
+	emailOne := c.Friends[0]
+	emailTwo := c.Friends[1]
+	if emailOne == emailTwo {
+		return fmt.Errorf("email request are duplicate")
+	}
+	return nil
+}
