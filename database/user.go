@@ -82,3 +82,39 @@ func (db Database) CreateBlockFriend(requestor, target string) error {
 	}
 	return nil
 }
+
+func (db Database) GetAllBlockerByEmail(requestor string) (*models.User, error) {
+	targetList := &models.User{}
+	query := `SELECT b.requestor FROM block b WHERE b.target = $1;`
+	rows, err := db.Conn.Query(query, requestor)
+	if err != nil {
+		return targetList, err
+	}
+	for rows.Next() {
+		var item models.BlockRequest
+		err := rows.Scan(&item.Requestor)
+		if err != nil {
+			return targetList, err
+		}
+		targetList.Blocked = append(targetList.Blocked, item.Requestor)
+	}
+	return targetList, nil
+}
+
+func (db Database) GetAllSubscriber(requestor string) (*models.User, error) {
+	targetList := &models.User{}
+	query := `SELECT s.requestor FROM subscription s WHERE s.target = $1;`
+	rows, err := db.Conn.Query(query, requestor)
+	if err != nil {
+		return targetList, err
+	}
+	for rows.Next() {
+		var item models.SubscriptionRequest
+		err := rows.Scan(&item.Requestor)
+		if err != nil {
+			return targetList, err
+		}
+		targetList.Subscription = append(targetList.Subscription, item.Requestor)
+	}
+	return targetList, nil
+}

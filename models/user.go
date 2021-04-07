@@ -122,3 +122,20 @@ func (b BlockRequest) Bind(r *http.Request) error {
 	}
 	return nil
 }
+
+type SendUpdateEmailRequest struct {
+	Sender string `json:"sender"`
+	Text   string `json:"text"`
+}
+
+type SendUpdateEmailResponse struct {
+	Success    bool     `json:"success"`
+	Recipients []string `json:"recipients"`
+}
+
+func (s SendUpdateEmailRequest) Bind(r *http.Request) error {
+	if s.Sender == "" || s.Text == "" {
+		return fmt.Errorf("email and content is a required field")
+	}
+	return nil
+}

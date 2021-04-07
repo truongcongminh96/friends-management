@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/friends-management/database"
 	"github.com/friends-management/models"
 )
@@ -17,6 +18,7 @@ type IUserService interface {
 	GetCommonFriendsList(req []string) (*models.FriendListResponse, error)
 	CreateSubscribe(req *models.SubscriptionRequest) (*models.ResultResponse, error)
 	CreateBlockFriend(req *models.BlockRequest) (*models.ResultResponse, error)
+	CreateReceiveUpdate(req *models.SendUpdateEmailRequest) (*models.SendUpdateEmailResponse, error)
 }
 
 func (db DbInstance) GetUserList() (*models.UserListResponse, error) {
@@ -113,5 +115,53 @@ func (db DbInstance) CreateBlockFriend(req *models.BlockRequest) (*models.Result
 	}
 
 	response.Success = true
+	return response, nil
+}
+
+func (db DbInstance) CreateReceiveUpdate(req *models.SendUpdateEmailRequest) (*models.SendUpdateEmailResponse, error) {
+	response := &models.SendUpdateEmailResponse{}
+
+	listUsers, err := db.Db.GetUserList()
+
+	blockedList, err := db.Db.GetAllBlockerByEmail(req.Sender)
+	if err != nil {
+		return response, err
+	}
+
+	friendList, err := db.Db.RetrieveFriendListByEmail(req.Sender)
+	if err != nil {
+		return response, err
+	}
+
+	subscriber, err := db.Db.GetAllSubscriber(req.Sender)
+	if err != nil {
+		return response, err
+	}
+
+	var usersNotBlocked []string
+	for _, user := range listUsers.Users {
+		for _, userBlock := range blockedList.Blocked {
+			if user.Email != userBlock {
+				usersNotBlocked = append(usersNotBlocked, user.Email)
+			}
+		}
+	}
+
+	var listFriendsNotBlock []string
+	for _, userNotBlocked := range usersNotBlocked {
+		for _, friends := range friendList.Friends {
+			if userNotBlocked == friends {
+				listFriendsNotBlock = append(listFriendsNotBlock, userNotBlocked)
+			}
+		}
+	}
+
+	var recipient []string
+	recipient = append(recipient, listFriendsNotBlock...)
+	recipient = append(recipient, subscriber.Subscription...)
+
+	fmt.Println(recipient)
+	response.Success = true
+	response.Recipients = recipient
 	return response, nil
 }

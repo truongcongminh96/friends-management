@@ -162,3 +162,27 @@ func createBlockFriend(service service.IUserService) http.HandlerFunc {
 		json.NewEncoder(w).Encode(response)
 	}
 }
+
+func receiveUpdate(service service.IUserService) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &models.SendUpdateEmailRequest{}
+		if err := render.Bind(r, req); err != nil {
+			render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		if !isEmailValid(req.Sender) {
+			log.Println("Email request is invalid")
+			_ = render.Render(w, r, ErrBadRequest)
+			return
+		}
+
+		response, err := service.CreateReceiveUpdate(req)
+		if err != nil {
+			render.Render(w, r, ServerErrorRenderer(err))
+			return
+		}
+
+		json.NewEncoder(w).Encode(response)
+	}
+}
