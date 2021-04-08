@@ -60,6 +60,18 @@ func (db DbInstance) CreateFriendConnection(req []string) (*models.ResultRespons
 		return response, err
 	}
 
+	isFriend , err := db.Db.CheckIsFriend(req)
+
+	if err != nil {
+		return response, err
+	}
+
+	if isFriend {
+		log.Printf("You are now friend")
+		response.Success = false
+		return response, nil
+	}
+
 	if err := db.Db.CreateFriendConnection(req); err != nil {
 		response.Success = false
 		return response, err

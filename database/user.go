@@ -63,10 +63,15 @@ func (db Database) CreateFriendConnection(friends []string) error {
 func (db Database) RetrieveFriendListByEmail(email string) (*models.FriendListResponse, error) {
 	friendList := &models.FriendListResponse{}
 	query := `
-	SELECT emailusertwo, id 
+	SELECT emailuserone, id 
 	FROM friend  
 	WHERE 
-		emailuserone = $1 
+		emailusertwo = $1
+	UNION 
+	SELECT emailusertwo, id 
+	FROM friend 
+	WHERE 
+		emailuserone =  $1 
 	ORDER BY id;`
 	rows, err := db.Conn.Query(query, email)
 	if err != nil {
@@ -136,4 +141,38 @@ func (db Database) GetAllSubscriber(requestor string) (*models.User, error) {
 		targetList.Subscription = append(targetList.Subscription, item.Requestor)
 	}
 	return targetList, nil
+}
+
+func (db Database) CheckIsFriend(email []string) (bool, error) {
+	var countUserOne int
+	var countUserTwo int
+
+	query := `
+	SELECT COUNT(*) 
+		FROM friend  
+	WHERE 
+		emailuserone = $1 AND emailusertwo = $2;`
+	row := db.Conn.QueryRow(query, email[0], email[1])
+	err := row.Scan(&countUserOne)
+	if err != nil {
+		return false, err
+	}
+
+	query = `SELECT COUNT(*) 
+		FROM friend  
+	WHERE 
+		emailuserone = $2 AND emailusertwo = $1;`
+
+	row = db.Conn.QueryRow(query, email[0], email[1])
+	err = row.Scan(&countUserTwo)
+
+	if err != nil {
+		return false, err
+	}
+
+	if countUserOne > 0 || countUserTwo > 0 {
+		return true, nil
+	}
+
+	return false, nil
 }
