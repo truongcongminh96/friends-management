@@ -33,7 +33,7 @@ func TestCreateFriendConnection(t *testing.T) {
 		},
 		{
 			name:   "connect failed by email address does not exist",
-			friend: []string{"andy@example", "lisa@example"},
+			friend: []string{"andy@example", "lasi@example"},
 			expectedResult: &models.ResultResponse{
 				Success: false,
 			},
@@ -42,13 +42,13 @@ func TestCreateFriendConnection(t *testing.T) {
 	data := DbInstance{db}
 	err := insertConnectFriend(db.Conn)
 	assert.NoError(t, err)
-	for _, tt := range testCases {
+	for _, tc := range testCases {
 		req := &models.FriendConnectionRequest{
-			Friends: tt.friend,
+			Friends: tc.friend,
 		}
 		response, err := data.CreateFriendConnection(req.Friends)
 		assert.NoError(t, err)
-		assert.Equal(t, tt.expectedResult, response)
+		assert.Equal(t, tc.expectedResult, response)
 	}
 }
 
@@ -59,10 +59,59 @@ func insertConnectFriend(db *sql.DB) error {
 		truncate users cascade;
 		insert into users (email) values ('andy@example');
 		insert into users (email) values ('john@example');
-		insert into users (email) values ('ana@example');
-		insert into users (email) values ('tom@example');
-		insert into users (email) values ('jerry@example');
-		insert into block (requestor, target) values ('tom@example','jerry@example');
+		insert into users (email) values ('lisa@example');
+		insert into users (email) values ('kate@example');
+		`
+	_, err := db.Exec(query)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	return nil
+}
+
+func TestRetrieveFriendList(t *testing.T) {
+	db := createConnectionForTest()
+	defer db.Conn.Close()
+
+	testCases := struct {
+		name           string
+		email          string
+		expectedResult *models.FriendListResponse
+	}{
+
+		name:  "success",
+		email: "andy@example",
+		expectedResult: &models.FriendListResponse{
+			Success: true,
+			Friends: []string{"john@example", "lisa@example"},
+			Count:   2,
+		},
+	}
+
+	data := DbInstance{db}
+	err := insertFriend(db.Conn)
+	assert.NoError(t, err)
+	req := &models.FriendListRequest{
+		Email: testCases.email,
+	}
+	response, err := data.RetrieveFriendList(req.Email)
+	assert.NoError(t, err)
+	assert.Equal(t, testCases.expectedResult, response)
+}
+
+func insertFriend(db *sql.DB) error {
+	query :=
+		`
+		truncate friend;
+		truncate users cascade;
+		insert into users (email) values ('andy@example');
+		insert into users (email) values ('john@example');
+		insert into users (email) values ('lisa@example');
+		insert into users (email) values ('kate@example');
+		insert into friend (emailuserone, emailusertwo) values ('andy@example','john@example');
+		insert into friend (emailuserone, emailusertwo) values ('andy@example','lisa@example');
+		insert into friend (emailuserone, emailusertwo) values ('lisa@example','kate@example');
 		`
 	_, err := db.Exec(query)
 	if err != nil {
@@ -92,4 +141,3 @@ func createConnectionForTest() database.Database {
 	// return the connection
 	return db
 }
-
