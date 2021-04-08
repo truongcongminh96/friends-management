@@ -210,26 +210,31 @@ func (db DbInstance) CreateReceiveUpdate(emailSender string) (*models.SendUpdate
 		return response, err
 	}
 
-	var usersNotBlocked []string
+	var listUsersNotBlockSender []string
 	for _, user := range listUsers.Users {
 		for _, userBlock := range blockedList.Blocked {
 			if user.Email != userBlock {
-				usersNotBlocked = append(usersNotBlocked, user.Email)
-			}
-		}
-	}
-
-	var listFriendsNotBlock []string
-	for _, userNotBlocked := range usersNotBlocked {
-		for _, friends := range friendList.Friends {
-			if userNotBlocked == friends {
-				listFriendsNotBlock = append(listFriendsNotBlock, userNotBlocked)
+				listUsersNotBlockSender = append(listUsersNotBlockSender, user.Email)
 			}
 		}
 	}
 
 	var recipient []string
-	recipient = append(recipient, listFriendsNotBlock...)
+	if len(listUsersNotBlockSender) == 0 {
+		recipient = append(recipient, friendList.Friends...)
+	} else {
+		var listFriendsNotBlock []string
+		for _, userNotBlocked := range listUsersNotBlockSender {
+			for _, friends := range friendList.Friends {
+				if userNotBlocked == friends {
+					listFriendsNotBlock = append(listFriendsNotBlock, userNotBlocked)
+				}
+			}
+		}
+
+		recipient = append(recipient, listFriendsNotBlock...)
+	}
+
 	recipient = append(recipient, subscriber.Subscription...)
 
 	response.Success = true
