@@ -19,8 +19,8 @@ type Database struct {
 func ConnectDB(username, password, database string) (Database, error) {
 	db := Database{}
 
-	dataInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		HOST, PORT, username, password, database)
+	dataInfo := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
+		username, password, HOST, PORT, database)
 
 	conn, err := sql.Open("postgres", dataInfo)
 	fmt.Println(conn, err)

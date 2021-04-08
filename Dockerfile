@@ -1,18 +1,30 @@
-FROM golang:1.16 as builder
+FROM golang:alpine as builder
 
-COPY go.mod go.sum /home/sites/friends-management/
+ENV GO111MODULE=on
 
-WORKDIR /home/sites/friends-management/
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
+WORKDIR /app
+COPY .env .
+COPY go.mod .
+COPY go.sum .
 
 RUN go mod download
 
-COPY . /home/sites/friends-management/
+COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o build/friends-management home/sites/friends-management
+RUN go build -o main .
 
-FROM alpine
-RUN apk add --no-cache ca-certificates && update-ca-certificates
 
-COPY --from=builder /home/sites/friends-management/build/friends-management /usr/bin/friends-management
-EXPOSE 8080 8081
-ENTRYPOINT ["/usr/bin/friends-management"]
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root
+
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env .
+
+EXPOSE 8080
+
+CMD ["./main"]

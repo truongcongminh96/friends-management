@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	PORT := ":8081"
+	PORT := ":8080"
 
 	err := godotenv.Load()
 	if err != nil {
