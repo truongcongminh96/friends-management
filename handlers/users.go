@@ -177,7 +177,7 @@ func receiveUpdate(service service.IUserService) http.HandlerFunc {
 			return
 		}
 
-		response, err := service.CreateReceiveUpdate(req)
+		response, err := service.CreateReceiveUpdate(req.Sender)
 		if err != nil {
 			render.Render(w, r, ServerErrorRenderer(err))
 			return

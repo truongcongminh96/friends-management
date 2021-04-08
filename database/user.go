@@ -19,6 +19,25 @@ func (db Database) GetUserList() (*models.UserListResponse, error) {
 	return list, nil
 }
 
+func (db Database) CheckUserExist(email string) (bool, error) {
+	var count int
+	query := `
+	SELECT count(*) 
+	FROM users u 
+	WHERE 
+		u.email = $1;`
+	row := db.Conn.QueryRow(query, email)
+	err := row.Scan(&count)
+	if err != nil {
+		return false, err
+	}
+
+	if count < 1 {
+		return false, nil
+	}
+	return true, nil
+}
+
 func (db Database) CreateUser(email string) error {
 	query := `INSERT INTO users (email) VALUES ($1);`
 	_, err := db.Conn.Exec(query, email)

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"fmt"
 	"github.com/friends-management/database"
 	"github.com/friends-management/models"
+	"log"
 )
 
 type DbInstance struct {
@@ -18,7 +18,7 @@ type IUserService interface {
 	GetCommonFriendsList(req []string) (*models.FriendListResponse, error)
 	CreateSubscribe(req *models.SubscriptionRequest) (*models.ResultResponse, error)
 	CreateBlockFriend(req *models.BlockRequest) (*models.ResultResponse, error)
-	CreateReceiveUpdate(req *models.SendUpdateEmailRequest) (*models.SendUpdateEmailResponse, error)
+	CreateReceiveUpdate(emailSender string) (*models.SendUpdateEmailResponse, error)
 }
 
 func (db DbInstance) GetUserList() (*models.UserListResponse, error) {
@@ -45,6 +45,21 @@ func (db DbInstance) CreateUser(email string) (*models.ResultResponse, error) {
 
 func (db DbInstance) CreateFriendConnection(req []string) (*models.ResultResponse, error) {
 	response := &models.ResultResponse{}
+
+	isUserExist, err := db.Db.CheckUserExist(req[0])
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
+
+	isYourFriendExist, err := db.Db.CheckUserExist(req[1])
+	if !isYourFriendExist {
+		log.Printf("Email address your friend does not register")
+		response.Success = false
+		return response, err
+	}
+
 	if err := db.Db.CreateFriendConnection(req); err != nil {
 		response.Success = false
 		return response, err
@@ -55,6 +70,14 @@ func (db DbInstance) CreateFriendConnection(req []string) (*models.ResultRespons
 
 func (db DbInstance) RetrieveFriendList(email string) (*models.FriendListResponse, error) {
 	response := &models.FriendListResponse{}
+
+	isUserExist, err := db.Db.CheckUserExist(email)
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
+
 	data, err := db.Db.RetrieveFriendListByEmail(email)
 	if err != nil {
 		return response, err
@@ -67,6 +90,20 @@ func (db DbInstance) RetrieveFriendList(email string) (*models.FriendListRespons
 
 func (db DbInstance) GetCommonFriendsList(email []string) (*models.FriendListResponse, error) {
 	response := &models.FriendListResponse{}
+
+	isUserExist, err := db.Db.CheckUserExist(email[0])
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
+
+	isYourFriendExist, err := db.Db.CheckUserExist(email[1])
+	if !isYourFriendExist {
+		log.Printf("Email address your friend does not register")
+		response.Success = false
+		return response, err
+	}
 
 	friendListEmailOne, err := db.Db.RetrieveFriendListByEmail(email[0])
 	if err != nil {
@@ -100,6 +137,20 @@ func (db DbInstance) GetCommonFriendsList(email []string) (*models.FriendListRes
 func (db DbInstance) CreateSubscribe(req *models.SubscriptionRequest) (*models.ResultResponse, error) {
 	response := &models.ResultResponse{}
 
+	isUserExist, err := db.Db.CheckUserExist(req.Requestor)
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
+
+	isYourSubscribeExist, err := db.Db.CheckUserExist(req.Target)
+	if !isYourSubscribeExist {
+		log.Printf("Email address you want to subcribe does not register")
+		response.Success = false
+		return response, err
+	}
+
 	if err := db.Db.CreateSubscribe(req.Requestor, req.Target); err != nil {
 		return response, err
 	}
@@ -110,6 +161,20 @@ func (db DbInstance) CreateSubscribe(req *models.SubscriptionRequest) (*models.R
 func (db DbInstance) CreateBlockFriend(req *models.BlockRequest) (*models.ResultResponse, error) {
 	response := &models.ResultResponse{}
 
+	isUserExist, err := db.Db.CheckUserExist(req.Requestor)
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
+
+	isYourBlockExist, err := db.Db.CheckUserExist(req.Target)
+	if !isYourBlockExist {
+		log.Printf("Email address you want to block does not register")
+		response.Success = false
+		return response, err
+	}
+
 	if err := db.Db.CreateBlockFriend(req.Requestor, req.Target); err != nil {
 		return response, err
 	}
@@ -118,22 +183,29 @@ func (db DbInstance) CreateBlockFriend(req *models.BlockRequest) (*models.Result
 	return response, nil
 }
 
-func (db DbInstance) CreateReceiveUpdate(req *models.SendUpdateEmailRequest) (*models.SendUpdateEmailResponse, error) {
+func (db DbInstance) CreateReceiveUpdate(emailSender string) (*models.SendUpdateEmailResponse, error) {
 	response := &models.SendUpdateEmailResponse{}
+
+	isUserExist, err := db.Db.CheckUserExist(emailSender)
+	if !isUserExist {
+		log.Printf("Your email address does not register")
+		response.Success = false
+		return response, err
+	}
 
 	listUsers, err := db.Db.GetUserList()
 
-	blockedList, err := db.Db.GetAllBlockerByEmail(req.Sender)
+	blockedList, err := db.Db.GetAllBlockerByEmail(emailSender)
 	if err != nil {
 		return response, err
 	}
 
-	friendList, err := db.Db.RetrieveFriendListByEmail(req.Sender)
+	friendList, err := db.Db.RetrieveFriendListByEmail(emailSender)
 	if err != nil {
 		return response, err
 	}
 
-	subscriber, err := db.Db.GetAllSubscriber(req.Sender)
+	subscriber, err := db.Db.GetAllSubscriber(emailSender)
 	if err != nil {
 		return response, err
 	}
@@ -160,7 +232,6 @@ func (db DbInstance) CreateReceiveUpdate(req *models.SendUpdateEmailRequest) (*m
 	recipient = append(recipient, listFriendsNotBlock...)
 	recipient = append(recipient, subscriber.Subscription...)
 
-	fmt.Println(recipient)
 	response.Success = true
 	response.Recipients = recipient
 	return response, nil
