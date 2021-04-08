@@ -9,6 +9,55 @@ import (
 	"testing"
 )
 
+func TestGetUserList(t *testing.T) {
+	db := createConnectionForTest()
+	defer db.Conn.Close()
+
+	testCases := struct {
+		name           string
+		expectedResult *models.UserListResponse
+	}{
+
+		name: "success",
+		expectedResult: &models.UserListResponse{
+			Users: []models.User{
+				{
+					Email:        "andy@example",
+					Friends:      nil,
+					Subscription: nil,
+					Blocked:      nil,
+				},
+				{
+					Email:        "john@example",
+					Friends:      nil,
+					Subscription: nil,
+					Blocked:      nil,
+				},
+				{
+					Email:        "lisa@example",
+					Friends:      nil,
+					Subscription: nil,
+					Blocked:      nil,
+				},
+				{
+					Email:        "kate@example",
+					Friends:      nil,
+					Subscription: nil,
+					Blocked:      nil,
+				},
+			},
+		},
+	}
+
+	data := DbInstance{db}
+	err := insertUsers(db.Conn)
+	assert.NoError(t, err)
+
+	response, err := data.GetUserList()
+	assert.NoError(t, err)
+	assert.Equal(t, testCases.expectedResult, response)
+}
+
 func TestCreateFriendConnection(t *testing.T) {
 	db := createConnectionForTest()
 	defer db.Conn.Close()
@@ -40,7 +89,7 @@ func TestCreateFriendConnection(t *testing.T) {
 		},
 	}
 	data := DbInstance{db}
-	err := insertConnectFriend(db.Conn)
+	err := insertUsers(db.Conn)
 	assert.NoError(t, err)
 	for _, tc := range testCases {
 		req := &models.FriendConnectionRequest{
@@ -52,7 +101,7 @@ func TestCreateFriendConnection(t *testing.T) {
 	}
 }
 
-func insertConnectFriend(db *sql.DB) error {
+func insertUsers(db *sql.DB) error {
 	query :=
 		`
 		truncate friend;
@@ -123,21 +172,20 @@ func insertFriend(db *sql.DB) error {
 
 func createConnectionForTest() database.Database {
 	db := database.Database{}
-	// Open the connection
+
 	conn, err := sql.Open("postgres", "postgres://postgres:1@localhost:5432/friends-management?sslmode=disable")
 
 	if err != nil {
 		panic(err)
 	}
 	db.Conn = conn
-	// check the connection
-	err = db.Conn.Ping()
 
+	err = db.Conn.Ping()
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Successfully connected!")
-	// return the connection
+
 	return db
 }
