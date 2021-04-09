@@ -163,6 +163,14 @@ func (db DbInstance) CreateSubscribe(req *models.SubscriptionRequest) (*models.R
 		return response, err
 	}
 
+	isSubscribe, _ := db.Db.CheckSubscribe(req.Requestor, req.Target)
+
+	if isSubscribe {
+		log.Printf("You are subcriber your request")
+		response.Success = false
+		return response, err
+	}
+
 	if err := db.Db.CreateSubscribe(req.Requestor, req.Target); err != nil {
 		return response, err
 	}

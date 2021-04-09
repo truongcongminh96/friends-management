@@ -98,6 +98,23 @@ func (db Database) CreateSubscribe(requestor, target string) error {
 	return nil
 }
 
+func (db Database) CheckSubscribe(requestor, target string) (bool, error) {
+	var count int
+	query := `SELECT COUNT(*) FROM subscription WHERE requestor = $1 AND target = $2;`
+
+	row := db.Conn.QueryRow(query, requestor, target)
+	err := row.Scan(&count)
+	if err != nil {
+		return false, err
+	}
+
+	if count > 0 {
+		return true, err
+	}
+
+	return false, nil
+}
+
 func (db Database) CreateBlockFriend(requestor, target string) error {
 	query := `INSERT INTO block (requestor, target) VALUES ($1, $2);`
 	_, err := db.Conn.Exec(query, requestor, target)
