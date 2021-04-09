@@ -133,8 +133,8 @@ func TestRetrieveFriendList(t *testing.T) {
 		email: "andy@example",
 		expectedResult: &models.FriendListResponse{
 			Success: true,
-			Friends: []string{"john@example", "lisa@example"},
-			Count:   2,
+			Friends: []string{"john@example", "lisa@example", "common@example.com"},
+			Count:   3,
 		},
 	}
 
@@ -149,6 +149,46 @@ func TestRetrieveFriendList(t *testing.T) {
 	assert.Equal(t, testCases.expectedResult, response)
 }
 
+func TestGetCommonFriends(t *testing.T) {
+	db := createConnectionForTest()
+	defer db.Conn.Close()
+	testCases := []struct {
+		name           string
+		friend         []string
+		expectedResult *models.FriendListResponse
+	}{
+		{
+			name:   "Success",
+			friend: []string{"andy@example", "john@example"},
+			expectedResult: &models.FriendListResponse{
+				Success: true,
+				Friends: []string{"common@example.com"},
+				Count:   1,
+			},
+		},
+		{
+			name:   "Empty",
+			friend: []string{"lisa@example", "andy@example"},
+			expectedResult: &models.FriendListResponse{
+				Success: true,
+				Friends: []string(nil),
+				Count:   0,
+			},
+		},
+	}
+	data := DbInstance{db}
+	err := insertFriend(db.Conn)
+	assert.NoError(t, err)
+	for _, tc := range testCases {
+		req := &models.FriendListResponse{
+			Friends: tc.friend,
+		}
+		response, err := data.GetCommonFriendsList(req.Friends)
+		assert.NoError(t, err)
+		assert.Equal(t, tc.expectedResult, response)
+	}
+}
+
 func insertFriend(db *sql.DB) error {
 	query :=
 		`
@@ -158,8 +198,11 @@ func insertFriend(db *sql.DB) error {
 		insert into users (email) values ('john@example');
 		insert into users (email) values ('lisa@example');
 		insert into users (email) values ('kate@example');
+		insert into users (email) values ('common@example.com');
 		insert into friend (emailuserone, emailusertwo) values ('andy@example','john@example');
 		insert into friend (emailuserone, emailusertwo) values ('andy@example','lisa@example');
+		insert into friend (emailuserone, emailusertwo) values ('andy@example','common@example.com');
+		insert into friend (emailuserone, emailusertwo) values ('john@example','common@example.com');
 		insert into friend (emailuserone, emailusertwo) values ('lisa@example','kate@example');
 		`
 	_, err := db.Exec(query)
