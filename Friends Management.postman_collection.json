@@ -9,14 +9,20 @@
 			"name": "Get all users",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"url": {
-					"raw": "http://localhost:8081/api/v1/user_list",
+					"raw": "http://localhost:8080/api/v1/user_list",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -42,12 +48,12 @@
 					"raw": "{ \"email\": \"d@gmail.com\"}"
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/registration",
+					"raw": "http://localhost:8080/api/v1/registration",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -70,15 +76,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"d@gmail.com\",\r\n        \"b@gmail.com\"\r\n    ]\r\n}"
+					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example\",\r\n        \"john@example\"\r\n    ]\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/friendConnection",
+					"raw": "http://localhost:8080/api/v1/friendConnection",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -95,7 +101,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \"email\": \"a@gmail.com\"}",
+					"raw": "{ \"email\": \"andy@example\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -103,12 +109,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/retrieveFriendList",
+					"raw": "http://localhost:8080/api/v1/retrieveFriendList",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -139,12 +145,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/commonFriends",
+					"raw": "http://localhost:8080/api/v1/commonFriends",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -161,7 +167,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"c@gmail.com\",\r\n \"target\": \"d@gmail.com\"\r\n}",
+					"raw": "{\r\n \"requestor\": \"andy@example\",\r\n \"target\": \"lisa@example\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -169,12 +175,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/subscribe",
+					"raw": "http://localhost:8080/api/v1/subscribe",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -191,7 +197,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"a@gmail.com\",\r\n \"target\": \"d@gmail.com\"\r\n}",
+					"raw": "{\r\n \"requestor\": \"kate@example\",\r\n \"target\": \"common@example.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -199,12 +205,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/blockFriend",
+					"raw": "http://localhost:8080/api/v1/blockFriend",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
@@ -221,7 +227,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{   \r\n \"sender\": \"d@gmail.com\",\r\n \"text\": \"Hello World! b@gmail.com\"\r\n}",
+					"raw": "{   \r\n \"sender\": \"e@gmail.com\",\r\n \"text\": \"Hello World! b@gmail.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -229,12 +235,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8081/api/v1/receiveUpdates",
+					"raw": "http://localhost:8080/api/v1/receiveUpdates",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8081",
+					"port": "8080",
 					"path": [
 						"api",
 						"v1",
