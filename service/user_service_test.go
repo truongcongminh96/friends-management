@@ -101,24 +101,6 @@ func TestCreateFriendConnection(t *testing.T) {
 	}
 }
 
-func insertUsers(db *sql.DB) error {
-	query :=
-		`
-		truncate friend;
-		truncate users cascade;
-		insert into users (email) values ('andy@example');
-		insert into users (email) values ('john@example');
-		insert into users (email) values ('lisa@example');
-		insert into users (email) values ('kate@example');
-		`
-	_, err := db.Exec(query)
-	if err != nil {
-		fmt.Print(err)
-		return err
-	}
-	return nil
-}
-
 func TestRetrieveFriendList(t *testing.T) {
 	db := createConnectionForTest()
 	defer db.Conn.Close()
@@ -285,6 +267,74 @@ func TestCreateBlockFriend(t *testing.T) {
 	}
 }
 
+func TestCreateReceiveUpdate(t *testing.T) {
+	db := createConnectionForTest()
+	defer db.Conn.Close()
+	testCases := []struct {
+		name           string
+		sender         string
+		text           string
+		expectedResult *models.SendUpdateEmailResponse
+	}{
+		{
+			name:   "process failed by email address does not exist",
+			sender: "notexists@example",
+			text:   "Hello World! kate@example",
+			expectedResult: &models.SendUpdateEmailResponse{
+				Success: false,
+			},
+		},
+		{
+			name:   "process empty by email address blocked",
+			sender: "sakura@example",
+			text:   "Hello World!",
+			expectedResult: &models.SendUpdateEmailResponse{
+				Success:    true,
+				Recipients: []string(nil),
+			},
+		},
+		{
+			name:   "Success",
+			sender: "john@example",
+			text:   "Hello World! kate@example",
+			expectedResult: &models.SendUpdateEmailResponse{
+				Success:    true,
+				Recipients: []string{"lisa@example", "andy@example"},
+			},
+		},
+	}
+	data := DbInstance{db}
+	err := insertReceiveUpdate(db.Conn)
+	assert.NoError(t, err)
+	for _, tc := range testCases {
+		req := &models.SendUpdateEmailRequest{
+			Sender: tc.sender,
+			Text:   tc.text,
+		}
+		response, err := data.CreateReceiveUpdate(req.Sender)
+		assert.NoError(t, err)
+		assert.Equal(t, tc.expectedResult, response)
+	}
+}
+
+func insertUsers(db *sql.DB) error {
+	query :=
+		`
+		truncate friend;
+		truncate users cascade;
+		insert into users (email) values ('andy@example');
+		insert into users (email) values ('john@example');
+		insert into users (email) values ('lisa@example');
+		insert into users (email) values ('kate@example');
+		`
+	_, err := db.Exec(query)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	return nil
+}
+
 func insertFriend(db *sql.DB) error {
 	query :=
 		`
@@ -300,6 +350,34 @@ func insertFriend(db *sql.DB) error {
 		insert into friend (emailuserone, emailusertwo) values ('andy@example','common@example.com');
 		insert into friend (emailuserone, emailusertwo) values ('john@example','common@example.com');
 		insert into friend (emailuserone, emailusertwo) values ('lisa@example','kate@example');
+		`
+	_, err := db.Exec(query)
+	if err != nil {
+		fmt.Print(err)
+		return err
+	}
+	return nil
+}
+
+func insertReceiveUpdate(db *sql.DB) error {
+	query :=
+		`
+		truncate block;
+		truncate friend;
+		truncate subscription;
+		truncate users cascade;
+		insert into users (email) values ('john@example');
+		insert into users (email) values ('lisa@example');
+		insert into users (email) values ('kate@example');
+		insert into users (email) values ('andy@example');
+		insert into users (email) values ('apple@example');
+		insert into users (email) values ('sakura@example');
+		insert into users (email) values ('kevin@example');
+		insert into friend (emailuserone, emailusertwo) values ('john@example','lisa@example');
+		insert into friend (emailuserone, emailusertwo) values ('sakura@example','kevin@example');
+		insert into subscription (requestor, target) values ('andy@example','john@example');
+		insert into block (requestor, target) values ('apple@example','john@example');
+		insert into block (requestor, target) values ('kevin@example','sakura@example');
 		`
 	_, err := db.Exec(query)
 	if err != nil {
