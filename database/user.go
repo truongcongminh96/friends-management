@@ -115,6 +115,23 @@ func (db Database) CheckSubscribe(requestor, target string) (bool, error) {
 	return false, nil
 }
 
+func (db Database) CheckIsBlock(requestor, target string) (bool, error) {
+	var count int
+	query := `SELECT COUNT(*) FROM block WHERE requestor = $1 AND target = $2;`
+
+	row := db.Conn.QueryRow(query, requestor, target)
+	err := row.Scan(&count)
+	if err != nil {
+		return false, err
+	}
+
+	if count > 0 {
+		return true, err
+	}
+
+	return false, nil
+}
+
 func (db Database) CreateBlockFriend(requestor, target string) error {
 	query := `INSERT INTO block (requestor, target) VALUES ($1, $2);`
 	_, err := db.Conn.Exec(query, requestor, target)

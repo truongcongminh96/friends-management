@@ -237,6 +237,54 @@ func TestCreateSubscribeFriend(t *testing.T) {
 	}
 }
 
+func TestCreateBlockFriend(t *testing.T) {
+	db := createConnectionForTest()
+	defer db.Conn.Close()
+	testCases := []struct {
+		name           string
+		requestor      string
+		target         string
+		expectedResult *models.ResultResponse
+	}{
+		{
+			name:      "Success",
+			requestor: "lisa@example",
+			target:    "john@example",
+			expectedResult: &models.ResultResponse{
+				Success: true,
+			},
+		},
+		{
+			name:      "process failed by email address does not exist",
+			requestor: "lisa@example",
+			target:    "notexits@example",
+			expectedResult: &models.ResultResponse{
+				Success: false,
+			},
+		},
+		{
+			name:      "process failed by target email address added to block",
+			requestor: "lisa@example",
+			target:    "john@example",
+			expectedResult: &models.ResultResponse{
+				Success: false,
+			},
+		},
+	}
+	data := DbInstance{db}
+	err := insertFriend(db.Conn)
+	assert.NoError(t, err)
+	for _, tc := range testCases {
+		req := &models.BlockRequest{
+			Requestor: tc.requestor,
+			Target:    tc.target,
+		}
+		response, err := data.CreateBlockFriend(req)
+		assert.NoError(t, err)
+		assert.Equal(t, tc.expectedResult, response)
+	}
+}
+
 func insertFriend(db *sql.DB) error {
 	query :=
 		`

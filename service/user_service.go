@@ -195,6 +195,14 @@ func (db DbInstance) CreateBlockFriend(req *models.BlockRequest) (*models.Result
 		return response, err
 	}
 
+	isBlocked, _ := db.Db.CheckIsBlock(req.Requestor, req.Target)
+
+	if isBlocked {
+		log.Printf("You are block your request")
+		response.Success = false
+		return response, err
+	}
+
 	if err := db.Db.CreateBlockFriend(req.Requestor, req.Target); err != nil {
 		return response, err
 	}
