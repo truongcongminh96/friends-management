@@ -38,3 +38,15 @@ func ServerErrorRenderer(err error) *ErrorResponse {
 		Message:    err.Error(),
 	}
 }
+
+func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(405)
+	render.Render(w, r, ErrMethodNotAllowed)
+}
+
+func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(400)
+	render.Render(w, r, ErrNotFound)
+}
