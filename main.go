@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"github.com/friends-management/database"
-	"github.com/friends-management/handlers"
+	"github.com/friends-management/routes"
 	"github.com/joho/godotenv"
 	"log"
 	"net"
@@ -14,31 +14,38 @@ import (
 	"time"
 )
 
-func main() {
-	PORT := ":8080"
+type envVars struct {
+	Port       string `env:"PORT"`
+	DbUser     string `env:"POSTGRES_USER"`
+	DbPassword string `env:"POSTGRES_PASSWORD"`
+	DbName     string `env:"POSTGRES_DB"`
+}
 
-	err := godotenv.Load()
+var envConfig envVars
+
+func init() {
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	dbUser := os.Getenv("POSTGRES_USER")
-	dbPassword := os.Getenv("POSTGRES_PASSWORD")
-	dbName := os.Getenv("POSTGRES_DB")
+	envConfig.Port = os.Getenv("PORT")
+	envConfig.DbUser = os.Getenv("POSTGRES_USER")
+	envConfig.DbPassword = os.Getenv("POSTGRES_PASSWORD")
+	envConfig.DbName = os.Getenv("POSTGRES_DB")
+}
 
-	listener, err := net.Listen("tcp", PORT)
+func main() {
+	db, err := database.ConnectDB(envConfig.DbUser, envConfig.DbPassword, envConfig.DbName)
+
+	listener, err := net.Listen("tcp", ":"+envConfig.Port)
 	if err != nil {
 		log.Fatalf("Error occurred: %s", err.Error())
 	}
 
-	db, err := database.ConnectDB(dbUser, dbPassword, dbName)
-
-	if err != nil {
-		log.Fatalf("Could not set up database: %v", err)
-	}
 	defer db.Conn.Close()
 
-	httpHandler := handlers.NewHandler(db)
+	httpHandler := routes.NewHandler(db)
 	server := &http.Server{
 		Handler: httpHandler,
 	}
@@ -46,7 +53,7 @@ func main() {
 		server.Serve(listener)
 	}()
 	defer Stop(server)
-	log.Printf("Started server on %s", PORT)
+	log.Printf("Started server on %s", envConfig.Port)
 	ch := make(chan os.Signal, 1)
 
 	// https://tour.golang.org/concurrency/1
