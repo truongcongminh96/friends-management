@@ -26,8 +26,8 @@ func (_userService UserService) CreateUser(user *models.User) error {
 }
 
 func (_userService UserService) IsExistedUser(email string) (bool, error) {
-	exist, err := _userService.IUserRepo.IsExistedUser(email)
-	return exist, err
+	isExist, err := _userService.IUserRepo.IsExistedUser(email)
+	return isExist, err
 }
 
 func (_userService UserService) GetUserIDByEmail(email string) (int, error) {

@@ -79,4 +79,21 @@ func createRoutes(router chi.Router) {
 		}
 		r.MethodFunc(http.MethodPost, "/", SubscribeHandlers.CreateSubscribe)
 	})
+
+	// Routes for block
+	router.Route("/block", func(r chi.Router) {
+		blockHandlers := handlers.BlockHandlers{
+			IBlockService: service.BlockService{
+				IBlockRepo: repositories.BlockRepo{
+					Db: db.Conn,
+				},
+			},
+			IUserService: service.UserService{
+				IUserRepo: repositories.UserRepo{
+					Db: db.Conn,
+				},
+			},
+		}
+		r.MethodFunc(http.MethodPost, "/", blockHandlers.CreateBlock)
+	})
 }

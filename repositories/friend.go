@@ -37,13 +37,13 @@ func (_friendRepo FriendRepo) IsExistedFriend(userID1 int, userID2 int) (bool, e
 	return false, nil
 }
 
-func (_friendRepo FriendRepo) GetListFriendId(userID int) ([]int, error) {
+func (_friendRepo FriendRepo) GetListFriendId(userId int) ([]int, error) {
 	query := `SELECT user1, user2 FROM friends WHERE user1=$1
 			  UNION
               SELECT user1, user2 FROM friends WHERE user2=$1`
 
 	var listFriendId []int
-	rows, err := _friendRepo.Db.Query(query, userID)
+	rows, err := _friendRepo.Db.Query(query, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (_friendRepo FriendRepo) GetListFriendId(userID int) ([]int, error) {
 		if err != nil {
 			return nil, err
 		}
-		if userID == id1 {
+		if userId == id1 {
 			listFriendId = append(listFriendId, id2)
 		} else {
 			listFriendId = append(listFriendId, id1)

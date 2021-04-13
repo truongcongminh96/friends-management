@@ -26,12 +26,12 @@ func (_userRepo UserRepo) CreateUser(user *models.User) error {
 
 func (_userRepo UserRepo) IsExistedUser(email string) (bool, error) {
 	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email=$1)`
-	var exist bool
-	err := _userRepo.Db.QueryRow(query, email).Scan(&exist)
+	var isExist bool
+	err := _userRepo.Db.QueryRow(query, email).Scan(&isExist)
 	if err != nil {
 		return true, err
 	}
-	if exist {
+	if isExist {
 		return true, nil
 	}
 	return false, nil
@@ -61,7 +61,7 @@ func (_userRepo UserRepo) GetEmailsByIDs(listFriendId []int) ([]string, error) {
 	query := fmt.Sprintf(`SELECT email FROM users WHERE id in (%v)`, strings.Join(stringIDs, ","))
 	rows, err := _userRepo.Db.Query(query)
 
-	emails := make([]string, 0)
+	var emails []string
 
 	if err != nil {
 		return nil, err

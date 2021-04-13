@@ -76,11 +76,11 @@ func (_subscribeHandlers *SubscribeHandlers) checkSubscribeEmail(subscribe model
 	}
 
 	// Check exists subscribe
-	exist, err := _subscribeHandlers.ISubscribeService.CheckExistedSubscribe(requestorId, targetId)
+	isExist, err := _subscribeHandlers.ISubscribeService.CheckExistedSubscribe(requestorId, targetId)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	if exist {
+	if isExist {
 		return nil, http.StatusAlreadyReported, errors.New("you are subscribed the target")
 	}
 

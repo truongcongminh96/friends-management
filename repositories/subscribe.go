@@ -22,12 +22,12 @@ func (_subscribeRepo SubscribeRepo) CreateSubscribe(subscribe *models.Subscribe)
 
 func (_subscribeRepo SubscribeRepo) IsExistedSubscribe(requestorId int, targetId int) (bool, error) {
 	query := `SELECT EXISTS(SELECT 1 FROM subscriptions WHERE requestor=$1 AND target=$2)`
-	var exist bool
-	err := _subscribeRepo.Db.QueryRow(query, requestorId, targetId).Scan(&exist)
+	var isExist bool
+	err := _subscribeRepo.Db.QueryRow(query, requestorId, targetId).Scan(&isExist)
 	if err != nil {
 		return true, err
 	}
-	if exist {
+	if isExist {
 		return true, nil
 	}
 	return false, nil

@@ -52,11 +52,11 @@ func (_userHandler UserHandler) CreateUser(w http.ResponseWriter, r *http.Reques
 }
 
 func (_userHandler *UserHandler) checkExistedUser(email string) (int, error) {
-	exist, err := _userHandler.IUserService.IsExistedUser(email)
+	isExist, err := _userHandler.IUserService.IsExistedUser(email)
 	if err != nil {
 		return http.StatusInternalServerError, err
 	}
-	if exist {
+	if isExist {
 		return http.StatusAlreadyReported, errors.New("email address exists")
 	}
 	return 0, nil
