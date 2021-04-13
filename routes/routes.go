@@ -62,4 +62,21 @@ func createRoutes(router chi.Router) {
 		r.MethodFunc(http.MethodPost, "/", friendHandlers.CreateFriend)
 		r.MethodFunc(http.MethodPost, "/friends-list", friendHandlers.GetFriendsList)
 	})
+
+	// Routes for subscribe
+	router.Route("/subscribe", func(r chi.Router) {
+		SubscribeHandlers := handlers.SubscribeHandlers{
+			ISubscribeService: service.SubscribeService{
+				ISubscribeRepo: repositories.SubscribeRepo{
+					Db: db.Conn,
+				},
+			},
+			IUserService: service.UserService{
+				IUserRepo: repositories.UserRepo{
+					Db: db.Conn,
+				},
+			},
+		}
+		r.MethodFunc(http.MethodPost, "/", SubscribeHandlers.CreateSubscribe)
+	})
 }
