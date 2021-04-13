@@ -30,12 +30,17 @@ func (userHandler UserHandler) GetAllUser(w http.ResponseWriter, r *http.Request
 func (userHandler UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userRequest := models.UserRequest{}
 	if err := json.NewDecoder(r.Body).Decode(&userRequest); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		_ = render.Render(w, r, ErrBadRequest)
+		return
+	}
+
+	if err := userRequest.Validate(); err != nil {
+		_ = render.Render(w, r, ErrorRenderer(err))
 		return
 	}
 
 	if err := userHandler.IUserService.CreateUser(userRequest); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		_ = render.Render(w, r, ServerErrorRenderer(err))
 		return
 	}
 
@@ -47,9 +52,29 @@ func (userHandler UserHandler) CreateUser(w http.ResponseWriter, r *http.Request
 	}
 }
 
+//func  CreateUser() http.HandleFunc{
+//	return func(w http.ResponseWriter, r *http.Request) {
+//		userRequest := models.UserRequest{}
+//
+//		if err := render.Bind(r, userRequest); err != nil {
+//			render.Render(w, r, ErrBadRequest)
+//			return
+//		}
+//
+//		err := userHandler.IUserService.CreateUser(userRequest)
+//				if err != nil {
+//					_ = render.Render(w, r, ServerErrorRenderer(err))
+//					return
+//				}
+//		_ = json.NewEncoder(w).Encode(&models.ResultResponse{
+//			Success: true,
+//		})
+//	})
+//}
+
 // https://golang.org/src/net/http/example_test.go
 // https://github.com/golang/go/issues/20803
-//func CreateUser(service service.IUserService) http.HandlerFunc {
+//func (userHandler UserHandler) CreateUser(service service.IUserService) http.HandlerFunc {
 //	return func(w http.ResponseWriter, r *http.Request) {
 //		req := &models.UserRequest{}
 //
@@ -64,13 +89,15 @@ func (userHandler UserHandler) CreateUser(w http.ResponseWriter, r *http.Request
 //			return
 //		}
 //
-//		response, err := service.CreateUser(req.Email)
+//		err := service.CreateUser(*req)
 //		if err != nil {
 //			_ = render.Render(w, r, ServerErrorRenderer(err))
 //			return
 //		}
 //
-//		_ = json.NewEncoder(w).Encode(response)
+//		_ = json.NewEncoder(w).Encode(&models.ResultResponse{
+//			Success: true,
+//		})
 //	}
 //}
 

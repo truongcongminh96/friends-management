@@ -11,7 +11,7 @@ type DbInstance struct {
 }
 
 type IUserService interface {
-	CreateUser(request models.UserRequest) error
+	CreateUser(models.UserRequest) error
 	GetUserList() (*models.UserListResponse, error)
 	//CreateFriendConnection(req []string) (*models.ResultResponse, error)
 	//RetrieveFriendList(email string) (*models.FriendListResponse, error)

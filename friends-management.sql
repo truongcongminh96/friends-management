@@ -1,35 +1,36 @@
-CREATE TABLE public.users
+CREATE TABLE IF NOT EXISTS users
 (
-    email varchar(100) NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (email)
+    id SERIAL PRIMARY KEY,
+    email text NOT NULL,
+    CONSTRAINT unique_user_email UNIQUE (email)
 );
 
-CREATE TABLE public.block
+CREATE TABLE IF NOT EXISTS friends
 (
-    id        int8         NOT NULL GENERATED ALWAYS AS IDENTITY,
-    requestor varchar(100) NULL,
-    target    varchar(100) NULL,
-    CONSTRAINT block_pkey PRIMARY KEY (id),
-    CONSTRAINT block_requestor_fkey FOREIGN KEY (requestor) REFERENCES users (email),
-    CONSTRAINT block_target_fkey FOREIGN KEY (target) REFERENCES users (email)
+    id SERIAL PRIMARY KEY,
+    user1 int NOT NULL,
+    user2 int NOT NULL,
+    FOREIGN KEY (user1) REFERENCES users(id),
+    FOREIGN KEY (user2) REFERENCES users(id),
+    CONSTRAINT unique_friends_user1_user2 UNIQUE (user1, user2)
 );
 
-CREATE TABLE public.friend
+CREATE TABLE IF NOT EXISTS subscriptions
 (
-    id           int8         NOT NULL GENERATED ALWAYS AS IDENTITY,
-    emailuserone varchar(100) NULL,
-    emailusertwo varchar(100) NULL,
-    CONSTRAINT friend_pkey PRIMARY KEY (id),
-    CONSTRAINT friend_emailuserone_fkey FOREIGN KEY (emailuserone) REFERENCES users (email),
-    CONSTRAINT friend_emailusertwo_fkey FOREIGN KEY (emailusertwo) REFERENCES users (email)
+    id SERIAL PRIMARY KEY,
+    requestor int NOT NULL,
+    target int NOT NULL,
+    FOREIGN KEY (requestor) REFERENCES users(id),
+    FOREIGN KEY (target) REFERENCES users(id),
+    CONSTRAINT unique_subscriptions_requestor_target UNIQUE (requestor, target)
 );
 
-CREATE TABLE public."subscription"
+CREATE TABLE IF NOT EXISTS blockings
 (
-    id        int8         NOT NULL GENERATED ALWAYS AS IDENTITY,
-    requestor varchar(100) NULL,
-    target    varchar(100) NULL,
-    CONSTRAINT subscription_pkey PRIMARY KEY (id),
-    CONSTRAINT subscription_requestor_fkey FOREIGN KEY (requestor) REFERENCES users (email),
-    CONSTRAINT subscription_target_fkey FOREIGN KEY (target) REFERENCES users (email)
+    id SERIAL PRIMARY KEY,
+    requestor int NOT NULL,
+    target int NOT NULL,
+    FOREIGN KEY (requestor) REFERENCES users(id),
+    FOREIGN KEY (target) REFERENCES users(id),
+    CONSTRAINT unique_blockings_requestor_target UNIQUE (requestor, target)
 );
