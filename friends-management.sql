@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS subscriptions
     CONSTRAINT unique_subscriptions_requestor_target UNIQUE (requestor, target)
 );
 
-CREATE TABLE IF NOT EXISTS blockings
+CREATE TABLE IF NOT EXISTS blocks
 (
     id SERIAL PRIMARY KEY,
     requestor int NOT NULL,
