@@ -18,18 +18,20 @@ var (
 	ErrBadRequest       = &ErrorResponse{StatusCode: 400, Message: "Bad request"}
 )
 
-func (e *ErrorResponse) Render(w http.ResponseWriter, r *http.Request) error {
+func (e *ErrorResponse) Render(_ http.ResponseWriter, r *http.Request) error {
 	render.Status(r, e.StatusCode)
 	return nil
 }
-func ErrorRenderer(err error) *ErrorResponse {
+
+func ErrorRenderer(err error, statusCode int) *ErrorResponse {
 	return &ErrorResponse{
 		Err:        err,
-		StatusCode: 400,
+		StatusCode: statusCode,
 		StatusText: "Bad request",
 		Message:    err.Error(),
 	}
 }
+
 func ServerErrorRenderer(err error) *ErrorResponse {
 	return &ErrorResponse{
 		Err:        err,
@@ -42,11 +44,11 @@ func ServerErrorRenderer(err error) *ErrorResponse {
 func MethodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(405)
-	render.Render(w, r, ErrMethodNotAllowed)
+	_ = render.Render(w, r, ErrMethodNotAllowed)
 }
 
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(400)
-	render.Render(w, r, ErrNotFound)
+	_ = render.Render(w, r, ErrNotFound)
 }

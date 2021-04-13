@@ -17,7 +17,7 @@ type UserRequest struct {
 	Email string `json:"email"`
 }
 
-type ResultResponse struct {
+type SuccessResponse struct {
 	Success bool `json:"success"`
 }
 

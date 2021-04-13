@@ -6,33 +6,29 @@ import (
 )
 
 type IUserRepo interface {
-	CreateUser(models.UserRequest) error
-	GetUserList() (*models.UserListResponse, error)
+	CreateUser(user *models.User) error
+	IsExistedUser(email string) (bool, error)
 }
 
 type UserRepo struct {
 	Db *sql.DB
 }
 
-func (userRepo UserRepo) CreateUser(userRequest models.UserRequest) error {
-	query := `insert into users(email) values ($1)`
-	_, err := userRepo.Db.Exec(query, userRequest.Email)
+func (_userRepo UserRepo) CreateUser(user *models.User) error {
+	query := `INSERT INTO users(email) VALUES ($1)`
+	_, err := _userRepo.Db.Exec(query, user.Email)
 	return err
 }
 
-func (userRepo UserRepo) GetUserList() (*models.UserListResponse, error) {
-	list := &models.UserListResponse{}
-	rows, err := userRepo.Db.Query("SELECT * FROM users")
+func (_userRepo UserRepo) IsExistedUser(email string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE email=$1)`
+	var exist bool
+	err := _userRepo.Db.QueryRow(query, email).Scan(&exist)
 	if err != nil {
-		return list, err
+		return true, err
 	}
-	for rows.Next() {
-		var user models.User
-		err := rows.Scan(&user.Email)
-		if err != nil {
-			return list, err
-		}
-		list.Users = append(list.Users, user)
+	if exist {
+		return true, nil
 	}
-	return list, nil
+	return false, nil
 }

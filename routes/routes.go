@@ -39,23 +39,5 @@ func createRoutes(router chi.Router) {
 			},
 		}
 		r.MethodFunc(http.MethodPost, "/", UserHandler.CreateUser)
-		r.MethodFunc(http.MethodGet, "/all", UserHandler.GetAllUser)
 	})
-
-	//router.Route("/user", func(r chi.Router) {
-	//	r.MethodFunc(http.MethodGet, "/list", handlers.GetUserList(db))
-	//	r.MethodFunc(http.MethodPost, "/", handlers.CreateUser(db))
-	//})
-
-	//router.Route("/friend", func(r chi.Router) {
-	//	r.MethodFunc(http.MethodPost, "/", handlers.CreateFriendConnection(db))
-	//	r.MethodFunc(http.MethodPost, "/retrieveFriendList", handlers.RetrieveFriendList(db))
-	//	r.MethodFunc(http.MethodPost, "/commonFriends", handlers.GetCommonFriendsList(db))
-	//	r.MethodFunc(http.MethodPost, "/blockFriend", handlers.CreateBlockFriend(db))
-	//	r.MethodFunc(http.MethodPost, "/receiveUpdates", handlers.ReceiveUpdate(db))
-	//})
-	//
-	//router.Route("/subscribe", func(r chi.Router) {
-	//	r.MethodFunc(http.MethodPost, "/", handlers.CreateSubscribe(db))
-	//})
 }
