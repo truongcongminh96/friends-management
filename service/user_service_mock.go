@@ -5,11 +5,11 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type mockUser struct {
+type MockUser struct {
 	mock.Mock
 }
 
-func (_m mockUser) CreateUser(userRepoInput *models.User) error {
+func (_m MockUser) CreateUser(userRepoInput *models.User) error {
 	args := _m.Called(userRepoInput)
 	var r error
 	if args.Get(0) != nil {
@@ -19,7 +19,7 @@ func (_m mockUser) CreateUser(userRepoInput *models.User) error {
 }
 
 
-func (_m mockUser) IsExistedUser(email string) (bool, error) {
+func (_m MockUser) IsExistedUser(email string) (bool, error) {
 	args := _m.Called(email)
 	r0 := args.Get(0).(bool)
 	var r1 error
