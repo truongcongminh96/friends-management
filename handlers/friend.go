@@ -29,12 +29,24 @@ func (_friendHandlers FriendHandlers) CreateFriend(w http.ResponseWriter, r *htt
 	}
 
 	// Check user and friend's
-	if _, statusCode, err := _friendHandlers.checkFriendRelationship(friendRequest.Friends); err != nil {
+	Ids, statusCode, err := _friendHandlers.checkFriendRelationship(friendRequest.Friends)
+	if err != nil {
 		_ = render.Render(w, r, ErrorRenderer(err, statusCode))
 		return
 	}
 
-	err := json.NewEncoder(w).Encode(&models.SuccessResponse{
+	friendModel := &models.Friend{
+		User1: Ids[0],
+		User2: Ids[1],
+	}
+
+	// Call service to create friend
+	if err := _friendHandlers.IFriendService.CreateFriend(friendModel); err != nil {
+		_ = render.Render(w, r, ServerErrorRenderer(err))
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(&models.SuccessResponse{
 		Success: true,
 	})
 	if err != nil {
@@ -67,7 +79,7 @@ func (_friendHandlers FriendHandlers) checkFriendRelationship(friendRequest []st
 		return nil, http.StatusInternalServerError, err
 	}
 	if isExists {
-		return nil, http.StatusAlreadyReported, errors.New("they have been friends already")
+		return nil, http.StatusAlreadyReported, errors.New("you are friends")
 	}
 
 	return []int{userId1, userId2}, 0, nil
