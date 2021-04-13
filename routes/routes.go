@@ -30,6 +30,7 @@ func NewHandler(db database.Database) http.Handler {
 func createRoutes(router chi.Router) {
 	db := dbInstance
 
+	// Routes for users
 	router.Route("/user", func(r chi.Router) {
 		UserHandler := handlers.UserHandler{
 			IUserService: service.UserService{
@@ -39,5 +40,25 @@ func createRoutes(router chi.Router) {
 			},
 		}
 		r.MethodFunc(http.MethodPost, "/", UserHandler.CreateUser)
+	})
+
+	// Routes for friends
+	router.Route("/friend", func(r chi.Router) {
+		friendHandlers := handlers.FriendHandlers{
+			IFriendService: service.FriendService{
+				IFriendRepo: repositories.FriendRepo{
+					Db: db.Conn,
+				},
+				IUserRepo: repositories.UserRepo{
+					Db: db.Conn,
+				},
+			},
+			IUserService: service.UserService{
+				IUserRepo: repositories.UserRepo{
+					Db: db.Conn,
+				},
+			},
+		}
+		r.MethodFunc(http.MethodPost, "/", friendHandlers.CreateFriend)
 	})
 }
