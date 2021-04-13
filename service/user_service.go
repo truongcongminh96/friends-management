@@ -13,6 +13,7 @@ type DbInstance struct {
 type IUserService interface {
 	CreateUser(user *models.User) error
 	IsExistedUser(email string) (bool, error)
+	GetUserIDByEmail(email string) (int, error)
 }
 
 type UserService struct {
@@ -27,4 +28,9 @@ func (_userService UserService) CreateUser(user *models.User) error {
 func (_userService UserService) IsExistedUser(email string) (bool, error) {
 	exist, err := _userService.IUserRepo.IsExistedUser(email)
 	return exist, err
+}
+
+func (_userService UserService) GetUserIDByEmail(email string) (int, error) {
+	userId, err := _userService.IUserRepo.GetUserIDByEmail(email)
+	return userId, err
 }

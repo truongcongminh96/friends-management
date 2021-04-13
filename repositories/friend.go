@@ -7,5 +7,5 @@ type FriendRepo struct {
 }
 
 type IFriendRepo interface {
-
+	IsExistedFriend()
 }
