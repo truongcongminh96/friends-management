@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/friends-management/models"
 	"github.com/friends-management/service"
+	"github.com/go-chi/render"
 	"net/http"
 )
 
@@ -11,17 +12,20 @@ type UserHandler struct {
 	IUserService service.IUserService
 }
 
-//func GetUserList(service service.IUserService) http.HandlerFunc {
-//	return func(w http.ResponseWriter, r *http.Request) {
-//		response, err := service.GetUserList()
-//
-//		if err != nil {
-//			_ = render.Render(w, r, ServerErrorRenderer(err))
-//			return
-//		}
-//		json.NewEncoder(w).Encode(response)
-//	}
-//}
+func (userHandler UserHandler) GetAllUser(w http.ResponseWriter, r *http.Request) {
+
+	response, err := userHandler.IUserService.GetUserList()
+
+	if err != nil {
+		_ = render.Render(w, r, ServerErrorRenderer(err))
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		return
+	}
+}
 
 func (userHandler UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userRequest := models.UserRequest{}

@@ -125,3 +125,5 @@ https://medium.com/@pinkudebnath/graceful-shutdown-of-golang-servers-using-conte
 https://codingpearls.com/go-programming/concurrency-ket-hop-voi-restful-api-trong-golang.html
 
 https://www.golang-book.com/books/intro/9
+
+https://zetcode.com/golang/pointer/

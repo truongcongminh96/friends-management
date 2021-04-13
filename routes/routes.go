@@ -39,6 +39,7 @@ func createRoutes(router chi.Router) {
 			},
 		}
 		r.MethodFunc(http.MethodPost, "/", UserHandler.CreateUser)
+		r.MethodFunc(http.MethodGet, "/all", UserHandler.GetAllUser)
 	})
 
 	//router.Route("/user", func(r chi.Router) {

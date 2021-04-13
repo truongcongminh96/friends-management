@@ -12,7 +12,7 @@ type DbInstance struct {
 
 type IUserService interface {
 	CreateUser(request models.UserRequest) error
-	//GetUserList() (*models.UserListResponse, error)
+	GetUserList() (*models.UserListResponse, error)
 	//CreateFriendConnection(req []string) (*models.ResultResponse, error)
 	//RetrieveFriendList(email string) (*models.FriendListResponse, error)
 	//GetCommonFriendsList(req []string) (*models.FriendListResponse, error)
@@ -25,18 +25,18 @@ type UserService struct {
 	IUserRepo repositories.IUserRepo
 }
 
-//func (db DbInstance) GetUserList() (*models.UserListResponse, error) {
-//	response := &models.UserListResponse{}
-//
-//	rep, err := db.Db.GetUserList()
-//
-//	if err != nil {
-//		return response, err
-//	}
-//
-//	response.Users = rep.Users
-//	return response, nil
-//}
+func (userService UserService) GetUserList() (*models.UserListResponse, error) {
+	response := &models.UserListResponse{}
+
+	rep, err := userService.IUserRepo.GetUserList()
+
+	if err != nil {
+		return response, err
+	}
+
+	response.Users = rep.Users
+	return response, nil
+}
 
 func (userService UserService) CreateUser(userRequest models.UserRequest) error {
 	err := userService.IUserRepo.CreateUser(userRequest)
