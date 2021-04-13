@@ -14,6 +14,28 @@ type FriendRequest struct {
 	Friends []string `json:"friends"`
 }
 
+type FriendsListRequest struct {
+	Email string `json:"email"`
+}
+
+func (r FriendsListRequest) Validate() error {
+	if r.Email == "" {
+		return errors.New("\"email\" is required")
+	}
+
+	if !helper.IsEmailValid(r.Email) {
+		return errors.New("\"email\"'s format is not valid. (ex: \"andy@example\")")
+	}
+
+	return nil
+}
+
+type FriendsResponse struct {
+	Success bool     `json:"success"`
+	Friends []string `json:"friends"`
+	Count   int      `json:"count"`
+}
+
 func (r FriendRequest) Validate() error {
 	emailUser1 := r.Friends[0]
 	emailUser2 := r.Friends[1]
@@ -31,10 +53,4 @@ func (r FriendRequest) Validate() error {
 	}
 
 	return nil
-}
-
-type FriendsResponse struct {
-	Success bool     `json:"success"`
-	Friends []string `json:"friends"`
-	Count   int      `json:"count"`
 }

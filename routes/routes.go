@@ -60,5 +60,6 @@ func createRoutes(router chi.Router) {
 			},
 		}
 		r.MethodFunc(http.MethodPost, "/", friendHandlers.CreateFriend)
+		r.MethodFunc(http.MethodPost, "/friends-list", friendHandlers.GetFriendsList)
 	})
 }
