@@ -8,7 +8,7 @@ import (
 
 type IFriendService interface {
 	CreateFriend(friend *models.Friend) error
-	CheckExistedFriend(userID1 int, userID2 int) (bool, error)
+	CheckExistedFriend(userId1 int, userId2 int) (bool, error)
 	CheckBlockedByUser(requestorId int, targetId int) (bool, string, error)
 	GetFriendsList(userId int) ([]string, error)
 	GetCommonFriends(Ids []int) ([]string, error)
@@ -25,8 +25,8 @@ func (_friendService FriendService) CreateFriend(friend *models.Friend) error {
 	return err
 }
 
-func (_friendService FriendService) CheckExistedFriend(userID1 int, userID2 int) (bool, error) {
-	isExist, err := _friendService.IFriendRepo.IsExistedFriend(userID1, userID2)
+func (_friendService FriendService) CheckExistedFriend(userId1 int, userId2 int) (bool, error) {
+	isExist, err := _friendService.IFriendRepo.IsExistedFriend(userId1, userId2)
 	return isExist, err
 }
 
