@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/friends-management/helper"
 	"github.com/friends-management/models"
 	"github.com/friends-management/repositories"
 )
@@ -11,6 +12,7 @@ type IFriendService interface {
 	CheckBlockedByUser(requestorId int, targetId int) (bool, string, error)
 	GetFriendsList(userId int) ([]string, error)
 	GetCommonFriends(Ids []int) ([]string, error)
+	GetEmailsReceiveUpdate(senderId int, text string) ([]string, error)
 }
 
 type FriendService struct {
@@ -70,4 +72,83 @@ func (_friendService FriendService) GetCommonFriends(Ids []int) ([]string, error
 		}
 	}
 	return commonFriends, nil
+}
+
+func (_friendService FriendService) GetEmailsReceiveUpdate(senderId int, text string) ([]string, error) {
+	// Get emails that blocked from the sender
+	blockedIds, err := _friendService.IFriendRepo.GetIdsBlockedUsers(senderId)
+	if err != nil {
+		return nil, err
+	}
+
+	blockedEmails, err := _friendService.IUserRepo.GetEmailsByIDs(blockedIds)
+	if err != nil {
+		return nil, err
+	}
+
+	var blockedMap = make(map[string]bool)
+	for _, email := range blockedEmails {
+		blockedMap[email] = true
+	}
+
+	result := make([]string, 0)
+
+	emailMap := make(map[string]bool)
+
+	// Get emails that has a friend connection with the sender
+	friendIds, err := _friendService.IFriendRepo.GetListFriendId(senderId)
+	if err != nil {
+		return nil, err
+	}
+
+	friendEmails, err := _friendService.IUserRepo.GetEmailsByIDs(friendIds)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, email := range friendEmails {
+		// If not blocked
+		if _, ok := blockedMap[email]; !ok {
+			// Append to result and add to emailMap
+			result = append(result, email)
+			emailMap[email] = true
+		}
+	}
+
+	// Get emails that subscribe to updates from the sender
+	subscriberIds, err := _friendService.IFriendRepo.GetIdsSubscribers(senderId)
+	if err != nil {
+		return nil, err
+	}
+
+	subscriberEmails, err := _friendService.IUserRepo.GetEmailsByIDs(subscriberIds)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, email := range subscriberEmails {
+		// If not blocked
+		if _, ok := blockedMap[email]; !ok {
+			// If not in emailMap then append to result and add to map
+			if _, ok := emailMap[email]; !ok {
+				result = append(result, email)
+				emailMap[email] = true
+			}
+		}
+	}
+
+	//Add mentionedEmails to result
+	mentionedEmails := helper.FindEmailFromText(text)
+	for _, email := range mentionedEmails {
+		// If not blocked
+		if _, ok := blockedMap[email]; !ok {
+			// If not in emailMap then append to result and add to map
+			if _, ok := emailMap[email]; !ok {
+				result = append(result, email)
+				emailMap[email] = true
+			}
+		}
+	}
+
+	return result, nil
 }

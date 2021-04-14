@@ -62,6 +62,7 @@ func createRoutes(router chi.Router) {
 		r.MethodFunc(http.MethodPost, "/", friendHandlers.CreateFriend)
 		r.MethodFunc(http.MethodPost, "/friends-list", friendHandlers.GetFriendsList)
 		r.MethodFunc(http.MethodPost, "/common-friends", friendHandlers.GetCommonFriends)
+		r.MethodFunc(http.MethodPost, "/receive-updates", friendHandlers.ReceiveUpdate)
 	})
 
 	// Routes for subscribe

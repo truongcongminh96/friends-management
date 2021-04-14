@@ -157,7 +157,7 @@ func (_friendHandlers *FriendHandlers) GetCommonFriends(w http.ResponseWriter, r
 	// Call service to get common friends
 	friendsList, err := _friendHandlers.IFriendService.GetCommonFriends(userIds)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		_ = render.Render(w, r, ServerErrorRenderer(err))
 		return
 	}
 
@@ -205,4 +205,54 @@ func (_friendHandlers *FriendHandlers) checkCommonFriends(email []string) ([]int
 	}
 
 	return []int{userId1, userId2}, 0, nil
+}
+
+func (_friendHandlers *FriendHandlers) ReceiveUpdate(w http.ResponseWriter, r *http.Request) {
+	// Decode request body
+	var emailRequest models.ReceiveUpdateRequest
+	if err := json.NewDecoder(r.Body).Decode(&emailRequest); err != nil {
+		_ = render.Render(w, r, ErrBadRequest)
+		return
+	}
+
+	// Validate request
+	if err := emailRequest.Validate(); err != nil {
+		_ = render.Render(w, r, ErrBadRequest)
+		return
+	}
+
+	// Check user exists and get userID
+	senderId, statusCode, err := _friendHandlers.checkEmailReceiveUpdate(emailRequest.Sender)
+	if err != nil {
+		_ = render.Render(w, r, ErrorRenderer(err, statusCode))
+		return
+	}
+
+	// Call service to get emails receiving updates
+	recipients, err := _friendHandlers.IFriendService.GetEmailsReceiveUpdate(senderId, emailRequest.Text)
+	if err != nil {
+		_ = render.Render(w, r, ServerErrorRenderer(err))
+		return
+	}
+
+	// Response
+	err = json.NewEncoder(w).Encode(models.ReceiveUpdateResponse{
+		Success:    true,
+		Recipients: recipients,
+	})
+	if err != nil {
+		return
+	}
+	return
+}
+
+func (_friendHandlers *FriendHandlers) checkEmailReceiveUpdate(email string) (int, int, error) {
+	userId, err := _friendHandlers.IUserService.GetUserIDByEmail(email)
+	if err != nil {
+		return 0, http.StatusInternalServerError, err
+	}
+	if userId == 0 {
+		return 0, http.StatusBadRequest, errors.New("the sender does not exist")
+	}
+	return userId, 0, nil
 }

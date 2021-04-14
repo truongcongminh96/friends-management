@@ -11,9 +11,11 @@ type FriendRepo struct {
 
 type IFriendRepo interface {
 	CreateFriend(friend *models.Friend) error
-	IsExistedFriend(userID1 int, userID2 int) (bool, error)
-	GetListFriendId(userID int) ([]int, error)
+	IsExistedFriend(userId1 int, userId2 int) (bool, error)
+	GetListFriendId(userId int) ([]int, error)
 	IsBlockedByUser(requestorId int, targetId int) (bool, string, error)
+	GetIdsBlockedUsers(userId int) ([]int, error)
+	GetIdsSubscribers(userId int) ([]int, error)
 }
 
 func (_friendRepo FriendRepo) CreateFriend(friend *models.Friend) error {
@@ -22,13 +24,13 @@ func (_friendRepo FriendRepo) CreateFriend(friend *models.Friend) error {
 	return err
 }
 
-func (_friendRepo FriendRepo) IsExistedFriend(userID1 int, userID2 int) (bool, error) {
+func (_friendRepo FriendRepo) IsExistedFriend(userId1 int, userId2 int) (bool, error) {
 	query := `SELECT EXISTS(SELECT * FROM friends WHERE (user1=$1 AND user2=$2)
 			 				UNION
 			  				SELECT * FROM friends WHERE (user2=$1 AND user1=$2)
 			 			   )`
 	var isExist bool
-	err := _friendRepo.Db.QueryRow(query, userID1, userID2).Scan(&isExist)
+	err := _friendRepo.Db.QueryRow(query, userId1, userId2).Scan(&isExist)
 	if err != nil {
 		return true, err
 	}
@@ -92,4 +94,42 @@ func (_friendRepo FriendRepo) IsBlockedByUser(requestorId int, targetId int) (bo
 	}
 
 	return false, message, nil
+}
+
+func (_friendRepo FriendRepo) GetIdsBlockedUsers(userId int) ([]int, error) {
+	query := `SELECT requestor FROM blocks WHERE target=$1`
+
+	var blockingIds []int
+	rows, err := _friendRepo.Db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		blockingIds = append(blockingIds, id)
+	}
+	return blockingIds, nil
+}
+
+func (_friendRepo FriendRepo) GetIdsSubscribers(userId int) ([]int, error) {
+	query := `SELECT requestor FROM subscribe WHERE target=$1`
+
+	var subscribers = make([]int, 0)
+	rows, err := _friendRepo.Db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		subscribers = append(subscribers, id)
+	}
+	return subscribers, nil
 }

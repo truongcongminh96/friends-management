@@ -77,3 +77,24 @@ func (r CommonFriendsRequest) Validate() error {
 
 	return nil
 }
+
+type ReceiveUpdateRequest struct {
+	Sender string `json:"sender"`
+	Text   string `json:"text"`
+}
+
+func (r ReceiveUpdateRequest) Validate() interface{} {
+	if r.Sender == "" {
+		return errors.New("sender is required")
+	}
+
+	if !helper.IsEmailValid(r.Sender) {
+		return errors.New("\"email\"'s format is not valid. (ex: \"andy@example\")")
+	}
+	return nil
+}
+
+type ReceiveUpdateResponse struct {
+	Success    bool     `json:"success"`
+	Recipients []string `json:"recipients"`
+}
