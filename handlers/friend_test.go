@@ -378,3 +378,352 @@ func TestFriendHandlers_CreateFriend(t *testing.T) {
 		})
 	}
 }
+
+func TestFriendHandlers_GetFriendsList(t *testing.T) {
+	type mockGetUserIDByEmail struct {
+		input  string
+		result int
+		err    error
+	}
+	type mockGetFriendsList struct {
+		input  int
+		result []string
+		err    error
+	}
+	testCases := []struct {
+		name                 string
+		requestBody          map[string]interface{}
+		expectedResponseBody string
+		expectedStatus       int
+		mockGetUserIDByEmail mockGetUserIDByEmail
+		mockGetFriendsList   mockGetFriendsList
+	}{
+		{
+			name: "decode request body failed",
+			requestBody: map[string]interface{}{
+				"email": 1,
+			},
+			expectedResponseBody: "{\"Err\":null,\"StatusCode\":400,\"StatusText\":\"\",\"Message\":\"Bad request\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+		},
+		{
+			name: "validate request body failed",
+			requestBody: map[string]interface{}{
+				"email": "",
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"\\\"email\\\" is required\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+		},
+		{
+			name: "get user id failed",
+			requestBody: map[string]interface{}{
+				"email": "andy@example.com",
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Bad request\",\"Message\":\"get user id failed\"}\n",
+			expectedStatus:       http.StatusInternalServerError,
+			mockGetUserIDByEmail: mockGetUserIDByEmail{
+				input:  "andy@example.com",
+				result: 0,
+				err:    errors.New("get user id failed"),
+			},
+		},
+		{
+			name: "user does not exist",
+			requestBody: map[string]interface{}{
+				"email": "andy@example.com",
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"email does not exist\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+			mockGetUserIDByEmail: mockGetUserIDByEmail{
+				input:  "andy@example.com",
+				result: 0,
+				err:    nil,
+			},
+		},
+		{
+			name: "get friends list failed",
+			requestBody: map[string]interface{}{
+				"email": "andy@example.com",
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Internal server error\",\"Message\":\"get friends list failed\"}\n",
+			expectedStatus:       http.StatusInternalServerError,
+			mockGetUserIDByEmail: mockGetUserIDByEmail{
+				input:  "andy@example.com",
+				result: 1,
+				err:    nil,
+			},
+			mockGetFriendsList: mockGetFriendsList{
+				input:  1,
+				result: nil,
+				err:    errors.New("get friends list failed"),
+			},
+		},
+		{
+			name: "get friends list successfully",
+			requestBody: map[string]interface{}{
+				"email": "andy@example.com",
+			},
+			expectedResponseBody: "{\"success\":true,\"friends\":[\"john@example.com\",\"kate@example.com\"],\"count\":2}\n",
+			expectedStatus:       http.StatusOK,
+			mockGetUserIDByEmail: mockGetUserIDByEmail{
+				input:  "andy@example.com",
+				result: 1,
+				err:    nil,
+			},
+			mockGetFriendsList: mockGetFriendsList{
+				input:  1,
+				result: []string{"john@example.com", "kate@example.com"},
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			// Given
+			mockFriend := new(service.MockFriend)
+			mockUser := new(service.MockUser)
+
+			mockUser.On("GetUserIDByEmail", testCase.mockGetUserIDByEmail.input).
+				Return(testCase.mockGetUserIDByEmail.result, testCase.mockGetUserIDByEmail.err)
+
+			mockFriend.On("GetFriendsList", testCase.mockGetFriendsList.input).
+				Return(testCase.mockGetFriendsList.result, testCase.mockGetFriendsList.err)
+
+			handlers := FriendHandlers{
+				IFriendService: mockFriend,
+				IUserService:   mockUser,
+			}
+
+			requestBody, err := json.Marshal(testCase.requestBody)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// When
+			req, err := http.NewRequest(http.MethodGet, "/friends/friends-list", bytes.NewBuffer(requestBody))
+			if err != nil {
+				t.Error(err)
+			}
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(handlers.GetFriendsList)
+			handler.ServeHTTP(rr, req)
+
+			// Then
+			require.Equal(t, testCase.expectedStatus, rr.Code)
+			require.Equal(t, testCase.expectedResponseBody, rr.Body.String())
+
+		})
+	}
+}
+
+func TestFriendHandlers_GetCommonFriends(t *testing.T) {
+	type mockGetUserIDByEmail struct {
+		input  string
+		result int
+		err    error
+	}
+	type mockGetCommonFriends struct {
+		input  []int
+		result []string
+		err    error
+	}
+	testCases := []struct {
+		name                 string
+		requestBody          map[string]interface{}
+		expectedResponseBody string
+		expectedStatus       int
+		mockGetUserId1       mockGetUserIDByEmail
+		mockGetUserId2       mockGetUserIDByEmail
+		mockGetCommonFriends mockGetCommonFriends
+	}{
+		{
+			name: "decode request body failed",
+			requestBody: map[string]interface{}{
+				"friends": 1,
+			},
+			expectedResponseBody: "{\"Err\":null,\"StatusCode\":400,\"StatusText\":\"\",\"Message\":\"Bad request\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+		},
+		{
+			name: "validate request body failed - missing friends",
+			requestBody: map[string]interface{}{
+				"friends": 0,
+			},
+			expectedResponseBody: "{\"Err\":null,\"StatusCode\":400,\"StatusText\":\"\",\"Message\":\"Bad request\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+		},
+		{
+			name: "validate request body failed - not enough email address",
+			requestBody: map[string]interface{}{
+				"friends": []string{"dao@gmail.com", ""},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"your friend is required\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+		},
+		{
+			name: "get first user id failed",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Bad request\",\"Message\":\"get user id failed\"}\n",
+			expectedStatus:       http.StatusInternalServerError,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 0,
+				err:    errors.New("get user id failed"),
+			},
+		},
+		{
+			name: "first email does not exist",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"the first email does not exist\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 0,
+				err:    nil,
+			},
+		},
+		{
+			name: "get second user failed",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Bad request\",\"Message\":\"get user id failed\"}\n",
+			expectedStatus:       http.StatusInternalServerError,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 1,
+				err:    nil,
+			},
+			mockGetUserId2: mockGetUserIDByEmail{
+				input:  "mai@gmail.com",
+				result: 0,
+				err:    errors.New("get user id failed"),
+			},
+		},
+		{
+			name: "second email does not exist",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"the second email does not exist\"}\n",
+			expectedStatus:       http.StatusBadRequest,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 1,
+				err:    nil,
+			},
+			mockGetUserId2: mockGetUserIDByEmail{
+				input:  "mai@gmail.com",
+				result: 0,
+				err:    nil,
+			},
+		},
+		{
+			name: "get common friends failed",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Internal server error\",\"Message\":\"get common friends failed\"}\n",
+			expectedStatus:       http.StatusInternalServerError,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 1,
+				err:    nil,
+			},
+			mockGetUserId2: mockGetUserIDByEmail{
+				input:  "mai@gmail.com",
+				result: 2,
+				err:    nil,
+			},
+			mockGetCommonFriends: mockGetCommonFriends{
+				input:  []int{1, 2},
+				result: nil,
+				err:    errors.New("get common friends failed"),
+			},
+		},
+		{
+			name: "get common friends successfully",
+			requestBody: map[string]interface{}{
+				"friends": []string{
+					"dao@gmail.com",
+					"mai@gmail.com",
+				},
+			},
+			expectedResponseBody: "{\"success\":true,\"friends\":[\"thu@gmail.com\",\"mai@gmail.com\"],\"count\":2}\n",
+			expectedStatus:       http.StatusOK,
+			mockGetUserId1: mockGetUserIDByEmail{
+				input:  "dao@gmail.com",
+				result: 1,
+			},
+			mockGetUserId2: mockGetUserIDByEmail{
+				input:  "mai@gmail.com",
+				result: 2,
+			},
+			mockGetCommonFriends: mockGetCommonFriends{
+				input:  []int{1, 2},
+				result: []string{"thu@gmail.com", "mai@gmail.com"},
+				err:    nil,
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			// Given
+			mockFriend := new(service.MockFriend)
+			mockUser := new(service.MockUser)
+
+			mockUser.On("GetUserIDByEmail", testCase.mockGetUserId1.input).
+				Return(testCase.mockGetUserId1.result, testCase.mockGetUserId1.err)
+			mockUser.On("GetUserIDByEmail", testCase.mockGetUserId2.input).
+				Return(testCase.mockGetUserId2.result, testCase.mockGetUserId2.err)
+
+			mockFriend.On("GetCommonFriends", testCase.mockGetCommonFriends.input).
+				Return(testCase.mockGetCommonFriends.result, testCase.mockGetCommonFriends.err)
+
+			handlers := FriendHandlers{
+				IFriendService: mockFriend,
+				IUserService:   mockUser,
+			}
+
+			requestBody, err := json.Marshal(testCase.requestBody)
+			if err != nil {
+				t.Error(err)
+			}
+
+			// When
+			req, err := http.NewRequest(http.MethodGet, "/friends/common-friends", bytes.NewBuffer(requestBody))
+			if err != nil {
+				t.Error(err)
+			}
+			rr := httptest.NewRecorder()
+			handler := http.HandlerFunc(handlers.GetCommonFriends)
+			handler.ServeHTTP(rr, req)
+
+			// Then
+			require.Equal(t, testCase.expectedStatus, rr.Code)
+			require.Equal(t, testCase.expectedResponseBody, rr.Body.String())
+
+		})
+
+	}
+}
