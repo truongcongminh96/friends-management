@@ -15,8 +15,8 @@ type IBlockService interface {
 }
 
 func (_blockService BlockService) CheckExistedBlock(requestorId int, targetId int) (bool, error) {
-	exist, err := _blockService.IBlockRepo.IsExistedBlock(requestorId, targetId)
-	return exist, err
+	isExist, err := _blockService.IBlockRepo.IsExistedBlock(requestorId, targetId)
+	return isExist, err
 }
 
 func (_blockService BlockService) CreateBlock(block *models.Block) error {

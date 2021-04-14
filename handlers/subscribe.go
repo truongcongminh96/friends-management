@@ -84,5 +84,13 @@ func (_subscribeHandlers *SubscribeHandlers) checkSubscribeEmail(subscribe model
 		return nil, http.StatusAlreadyReported, errors.New("you are subscribed the target")
 	}
 
+	isBlocked, message, err := _subscribeHandlers.ISubscribeService.CheckBlockedByUser(requestorId, targetId)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	if isBlocked {
+		return nil, http.StatusPreconditionFailed, errors.New(message)
+	}
+
 	return []int{requestorId, targetId}, 0, nil
 }

@@ -12,6 +12,7 @@ type SubscribeService struct {
 type ISubscribeService interface {
 	CreateSubscribe(subscribe *models.Subscribe) error
 	CheckExistedSubscribe(requestorId int, targetId int) (bool, error)
+	CheckBlockedByUser(requestorId int, targetId int) (bool, string, error)
 }
 
 func (_subscribeService SubscribeService) CheckExistedSubscribe(requestorId int, targetId int) (bool, error) {
@@ -22,4 +23,9 @@ func (_subscribeService SubscribeService) CheckExistedSubscribe(requestorId int,
 func (_subscribeService SubscribeService) CreateSubscribe(subscribe *models.Subscribe) error {
 	err := _subscribeService.ISubscribeRepo.CreateSubscribe(subscribe)
 	return err
+}
+
+func (_subscribeService SubscribeService) CheckBlockedByUser(requestorId int, targetId int) (bool, string, error) {
+	isBlocked, message, err := _subscribeService.ISubscribeRepo.IsBlockedByUser(requestorId, targetId)
+	return isBlocked, message, err
 }

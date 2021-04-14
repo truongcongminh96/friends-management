@@ -75,11 +75,11 @@ func (_blockHandlers *BlockHandlers) checkBlock(block models.BlockRequest) ([]in
 	}
 
 	// Check if blocking exists
-	exist, err := _blockHandlers.IBlockService.CheckExistedBlock(requestorID, targetID)
+	isExist, err := _blockHandlers.IBlockService.CheckExistedBlock(requestorID, targetID)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
 	}
-	if exist {
+	if isExist {
 		return nil, http.StatusAlreadyReported, errors.New("you are block the target")
 	}
 	return []int{requestorID, targetID}, 0, nil
