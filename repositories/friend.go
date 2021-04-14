@@ -13,6 +13,7 @@ type IFriendRepo interface {
 	CreateFriend(friend *models.Friend) error
 	IsExistedFriend(userID1 int, userID2 int) (bool, error)
 	GetListFriendId(userID int) ([]int, error)
+	IsBlockedByUser(requestorId int, targetId int) (bool, string, error)
 }
 
 func (_friendRepo FriendRepo) CreateFriend(friend *models.Friend) error {
@@ -60,4 +61,35 @@ func (_friendRepo FriendRepo) GetListFriendId(userId int) ([]int, error) {
 		}
 	}
 	return listFriendId, nil
+}
+
+func (_friendRepo FriendRepo) IsBlockedByUser(requestorId int, targetId int) (bool, string, error) {
+	var countRequestor int
+	var countTarget int
+	var message string
+
+	query := `SELECT COUNT(*) FROM blocks WHERE requestor=$1 AND target=$2`
+
+	err := _friendRepo.Db.QueryRow(query, requestorId, targetId).Scan(&countRequestor)
+	if err != nil {
+		message = "Error"
+		return true, message, err
+	}
+	if countRequestor > 0 {
+		message = "You are block the target"
+		return true, message, nil
+	}
+
+	query = `SELECT COUNT(*) FROM blocks WHERE requestor=$2 AND target=$1`
+	err = _friendRepo.Db.QueryRow(query, requestorId, targetId).Scan(&countTarget)
+	if err != nil {
+		message = "Error"
+		return true, message, err
+	}
+	if countTarget > 0 {
+		message := "You are block by target"
+		return true, message, nil
+	}
+
+	return false, message, nil
 }

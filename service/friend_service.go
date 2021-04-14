@@ -8,6 +8,7 @@ import (
 type IFriendService interface {
 	CreateFriend(friend *models.Friend) error
 	CheckExistedFriend(userID1 int, userID2 int) (bool, error)
+	CheckBlockedByUser(requestorId int, targetId int) (bool, string, error)
 	GetFriendsList(userId int) ([]string, error)
 }
 
@@ -37,4 +38,9 @@ func (_friendService FriendService) GetFriendsList(userId int) ([]string, error)
 		return nil, err
 	}
 	return result, err
+}
+
+func (_friendService FriendService) CheckBlockedByUser(requestorId int, targetId int) (bool, string, error) {
+	isBlocked, message, err := _friendService.IFriendRepo.IsBlockedByUser(requestorId, targetId)
+	return isBlocked, message, err
 }

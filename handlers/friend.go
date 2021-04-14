@@ -82,6 +82,15 @@ func (_friendHandlers FriendHandlers) checkFriendRelationship(friendRequest []st
 		return nil, http.StatusAlreadyReported, errors.New("you are friends")
 	}
 
+	// Check blocking
+	isBlocked, message, err := _friendHandlers.IFriendService.CheckBlockedByUser(userId1, userId2)
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	if isBlocked {
+		return nil, http.StatusPreconditionFailed, errors.New(message)
+	}
+
 	return []int{userId1, userId2}, 0, nil
 }
 
