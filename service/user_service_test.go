@@ -95,7 +95,6 @@ func TestUserServices_IsExistedUser(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			// Given
 			mockUser := new(MockUser)
 			mockUser.On("IsExistedUser", testCase.mockRepoInput).
 				Return(testCase.mockRepoResult, testCase.mockRepoError)
@@ -104,10 +103,8 @@ func TestUserServices_IsExistedUser(t *testing.T) {
 				IUserRepo: mockUser,
 			}
 
-			// When
 			result, err := services.IsExistedUser(testCase.input)
 
-			// Then
 			if testCase.expectedError != nil {
 				require.EqualError(t, err, testCase.expectedError.Error())
 			} else {
