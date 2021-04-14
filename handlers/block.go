@@ -39,7 +39,7 @@ func (_blockHandlers *BlockHandlers) CreateBlock(w http.ResponseWriter, r *http.
 		Requestor: Ids[0],
 		Target:    Ids[1],
 	}
-	// Call service to create blocking
+	// Call service to create block
 	if err := _blockHandlers.IBlockService.CreateBlock(blockModel); err != nil {
 		_ = render.Render(w, r, ServerErrorRenderer(err))
 		return
@@ -74,7 +74,7 @@ func (_blockHandlers *BlockHandlers) checkBlock(block models.BlockRequest) ([]in
 		return nil, http.StatusBadRequest, errors.New("the target does not exist")
 	}
 
-	// Check if blocking exists
+	// Check if block exists
 	isExist, err := _blockHandlers.IBlockService.CheckExistedBlock(requestorID, targetID)
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
