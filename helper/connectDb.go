@@ -27,3 +27,17 @@ func ConnectDb() *sql.DB {
 
 	return db
 }
+
+func ConnectDbFailed() *sql.DB {
+
+	dataInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable",
+		"127.0.0.1", 5432, "postgres", "11", "friends-management")
+
+	// Open db connection
+	db, err := sql.Open("postgres", dataInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}

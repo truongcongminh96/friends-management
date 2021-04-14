@@ -1,1 +1,1 @@
-TRUNCATE TABLE users, friends, subscriptions, blocks;
+TRUNCATE TABLE users, friends, subscribe, blocks;
