@@ -267,7 +267,7 @@ func TestBlockHandlers_CreateBlock(t *testing.T) {
 			}
 
 			// When
-			req, err := http.NewRequest(http.MethodPost, "/Blocks", bytes.NewBuffer(requestBody))
+			req, err := http.NewRequest(http.MethodPost, "/block", bytes.NewBuffer(requestBody))
 			if err != nil {
 				t.Error(err)
 			}

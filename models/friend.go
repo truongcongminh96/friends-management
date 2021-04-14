@@ -54,3 +54,26 @@ func (r FriendRequest) Validate() error {
 
 	return nil
 }
+
+type CommonFriendsRequest struct {
+	Friends []string `json:"friends"`
+}
+
+func (r CommonFriendsRequest) Validate() error {
+	emailUser1 := r.Friends[0]
+	emailUser2 := r.Friends[1]
+
+	if emailUser1 == "" {
+		return errors.New("your email is required")
+	}
+
+	if emailUser2 == "" {
+		return errors.New("your friend is required")
+	}
+
+	if !helper.IsEmailValid(emailUser1) || !helper.IsEmailValid(emailUser2) {
+		return errors.New("\"email\"'s format is not valid. (ex: \"andy@example\")")
+	}
+
+	return nil
+}

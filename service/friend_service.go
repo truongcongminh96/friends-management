@@ -10,6 +10,7 @@ type IFriendService interface {
 	CheckExistedFriend(userID1 int, userID2 int) (bool, error)
 	CheckBlockedByUser(requestorId int, targetId int) (bool, string, error)
 	GetFriendsList(userId int) ([]string, error)
+	GetCommonFriends(Ids []int) ([]string, error)
 }
 
 type FriendService struct {
@@ -43,4 +44,30 @@ func (_friendService FriendService) GetFriendsList(userId int) ([]string, error)
 func (_friendService FriendService) CheckBlockedByUser(requestorId int, targetId int) (bool, string, error) {
 	isBlocked, message, err := _friendService.IFriendRepo.IsBlockedByUser(requestorId, targetId)
 	return isBlocked, message, err
+}
+
+func (_friendService FriendService) GetCommonFriends(Ids []int) ([]string, error) {
+	// Get friends list of each email address
+	friends1, err := _friendService.GetFriendsList(Ids[0])
+	if err != nil {
+		return nil, err
+	}
+	friends2, err := _friendService.GetFriendsList(Ids[1])
+	if err != nil {
+		return nil, err
+	}
+
+	// Find common friends in 2 friends list
+	var commonFriends []string
+	hashMap := make(map[string]bool)
+	for _, email := range friends1 {
+		hashMap[email] = true
+
+	}
+	for _, email := range friends2 {
+		if _, ok := hashMap[email]; ok {
+			commonFriends = append(commonFriends, email)
+		}
+	}
+	return commonFriends, nil
 }

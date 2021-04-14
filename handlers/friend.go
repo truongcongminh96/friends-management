@@ -133,6 +133,47 @@ func (_friendHandlers *FriendHandlers) GetFriendsList(w http.ResponseWriter, r *
 	return
 }
 
+func (_friendHandlers *FriendHandlers) GetCommonFriends(w http.ResponseWriter, r *http.Request) {
+	// Decode request body
+	var emailRequest models.CommonFriendsRequest
+	if err := json.NewDecoder(r.Body).Decode(&emailRequest); err != nil {
+		_ = render.Render(w, r, ErrBadRequest)
+		return
+	}
+
+	// Validate request body
+	if err := emailRequest.Validate(); err != nil {
+		_ = render.Render(w, r, ErrorRenderer(err, 400))
+		return
+	}
+
+	// Check users exists and get userIDs
+	userIds, statusCode, err := _friendHandlers.checkCommonFriends(emailRequest.Friends)
+	if err != nil {
+		_ = render.Render(w, r, ErrorRenderer(err, statusCode))
+		return
+	}
+
+	// Call service to get common friends
+	friendsList, err := _friendHandlers.IFriendService.GetCommonFriends(userIds)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Response
+	err = json.NewEncoder(w).Encode(models.FriendsResponse{
+		Success: true,
+		Friends: friendsList,
+		Count:   len(friendsList),
+	})
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 func (_friendHandlers *FriendHandlers) getFriendsListValidation(email string) (int, int, error) {
 	userID, err := _friendHandlers.IUserService.GetUserIDByEmail(email)
 	if err != nil {
@@ -142,4 +183,26 @@ func (_friendHandlers *FriendHandlers) getFriendsListValidation(email string) (i
 		return 0, http.StatusBadRequest, errors.New("email does not exist")
 	}
 	return userID, 0, nil
+}
+
+func (_friendHandlers *FriendHandlers) checkCommonFriends(email []string) ([]int, int, error) {
+	// Check first email
+	userId1, err := _friendHandlers.IUserService.GetUserIDByEmail(email[0])
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	if userId1 == 0 {
+		return nil, http.StatusBadRequest, errors.New("the first email does not exist")
+	}
+
+	// Check second email
+	userId2, err := _friendHandlers.IUserService.GetUserIDByEmail(email[1])
+	if err != nil {
+		return nil, http.StatusInternalServerError, err
+	}
+	if userId2 == 0 {
+		return nil, http.StatusBadRequest, errors.New("the second email does not exist")
+	}
+
+	return []int{userId1, userId2}, 0, nil
 }
