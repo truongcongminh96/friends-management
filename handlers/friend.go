@@ -3,10 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
+
 	"github.com/friends-management/models"
 	"github.com/friends-management/service"
 	"github.com/go-chi/render"
-	"net/http"
 )
 
 type FriendHandlers struct {

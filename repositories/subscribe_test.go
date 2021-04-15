@@ -3,10 +3,11 @@ package repositories
 import (
 	"database/sql"
 	"errors"
+	"testing"
+
 	"github.com/friends-management/helper"
 	"github.com/friends-management/models"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestSubscribeRepositories_CreateSubscribe(t *testing.T) {

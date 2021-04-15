@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+
 	"github.com/friends-management/helper"
 )
 

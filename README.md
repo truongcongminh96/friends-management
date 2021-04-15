@@ -196,6 +196,10 @@ friends_management
 
 - Workflow: Request => Handlers => Services => Repositories => DB
 
-#Note
-	 https://tour.golang.org/concurrency/1
-	 https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
+#Note References
+
+https://blog.golang.org/pipelines
+
+https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
+
+https://www.golang-book.com/books/intro

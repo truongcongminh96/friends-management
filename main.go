@@ -2,9 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/friends-management/database"
-	"github.com/friends-management/routes"
-	"github.com/joho/godotenv"
 	"log"
 	"net"
 	"net/http"
@@ -12,6 +9,10 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/friends-management/database"
+	"github.com/friends-management/routes"
+	"github.com/joho/godotenv"
 )
 
 func init() {

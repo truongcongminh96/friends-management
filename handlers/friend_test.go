@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/friends-management/models"
-	"github.com/friends-management/service"
-	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/friends-management/models"
+	"github.com/friends-management/service"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFriendHandlers_CreateFriend(t *testing.T) {

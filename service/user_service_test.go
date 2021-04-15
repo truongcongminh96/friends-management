@@ -2,9 +2,10 @@ package service
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/friends-management/models"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestUserServices_CreateUser(t *testing.T) {

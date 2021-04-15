@@ -2,13 +2,12 @@ package routes
 
 import (
 	"database/sql"
-	"github.com/friends-management/database"
-	"github.com/friends-management/repositories"
-	"github.com/friends-management/service"
 	"net/http"
 
-	_ "github.com/friends-management/database"
+	"github.com/friends-management/database"
 	"github.com/friends-management/handlers"
+	"github.com/friends-management/repositories"
+	"github.com/friends-management/service"
 	"github.com/go-chi/chi"
 )
 

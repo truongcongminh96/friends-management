@@ -2,10 +2,11 @@ package repositories
 
 import (
 	"errors"
+	"testing"
+
 	"github.com/friends-management/helper"
 	"github.com/friends-management/models"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestUserRepositories_CreateUser(t *testing.T) {
