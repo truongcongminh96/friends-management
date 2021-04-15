@@ -36,7 +36,34 @@ func (_friendService FriendService) GetFriendsList(userId int) ([]string, error)
 		return nil, err
 	}
 
-	result, err := _friendService.IUserRepo.GetEmailsByIDs(listFriendId)
+	// Get users that is blocked by this user and get users that block this user
+	blockMap := make(map[int]bool)
+	blockedByTargetIds, err := _friendService.IFriendRepo.GetIdsBlockedByTarget(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, id := range blockedByTargetIds {
+		blockMap[id] = true
+	}
+
+	blockedByUserIds, err := _friendService.IFriendRepo.GetIdsBlockedUsers(userId)
+	if err != nil {
+		return nil, err
+	}
+	for _, id := range blockedByUserIds {
+		blockMap[id] = true
+	}
+
+	// Get friends that has friend connection and not blocking
+	friendIds := make([]int, 0)
+	for _, id := range listFriendId {
+		if _, ok := blockMap[id]; !ok {
+			friendIds = append(friendIds, id)
+		}
+	}
+
+	result, err := _friendService.IUserRepo.GetEmailsByIDs(friendIds)
 	if err != nil {
 		return nil, err
 	}

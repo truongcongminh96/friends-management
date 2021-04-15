@@ -29,6 +29,11 @@ func (_m *MockFriend) GetIdsBlockedUsers(userId int) ([]int, error) {
 	return returnArgs.Get(0).([]int), returnArgs.Error(1)
 }
 
+func (_m *MockFriend) GetIdsBlockedByTarget(userId int) ([]int, error) {
+	returnArgs := _m.Called(userId)
+	return returnArgs.Get(0).([]int), returnArgs.Error(1)
+}
+
 func (_m *MockFriend) GetIdsSubscribers(userId int) ([]int, error) {
 	returnArgs := _m.Called(userId)
 	return returnArgs.Get(0).([]int), returnArgs.Error(1)

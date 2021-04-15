@@ -16,6 +16,7 @@ type IFriendRepo interface {
 	IsBlockedByUser(requestorId int, targetId int) (bool, string, error)
 	GetIdsBlockedUsers(userId int) ([]int, error)
 	GetIdsSubscribers(userId int) ([]int, error)
+	GetIdsBlockedByTarget(userId int) ([]int, error)
 }
 
 func (_friendRepo FriendRepo) CreateFriend(friend *models.Friend) error {
@@ -45,7 +46,7 @@ func (_friendRepo FriendRepo) GetListFriendId(userId int) ([]int, error) {
 			  UNION
               SELECT user1, user2 FROM friends WHERE user2=$1`
 
-	var listFriendId []int
+	var listFriendId = make([]int, 0)
 	rows, err := _friendRepo.Db.Query(query, userId)
 	if err != nil {
 		return nil, err
@@ -99,7 +100,7 @@ func (_friendRepo FriendRepo) IsBlockedByUser(requestorId int, targetId int) (bo
 func (_friendRepo FriendRepo) GetIdsBlockedUsers(userId int) ([]int, error) {
 	query := `SELECT requestor FROM blocks WHERE target=$1`
 
-	var blockingIds []int
+	var blockIds = make([]int, 0)
 	rows, err := _friendRepo.Db.Query(query, userId)
 	if err != nil {
 		return nil, err
@@ -110,9 +111,28 @@ func (_friendRepo FriendRepo) GetIdsBlockedUsers(userId int) ([]int, error) {
 		if err != nil {
 			return nil, err
 		}
-		blockingIds = append(blockingIds, id)
+		blockIds = append(blockIds, id)
 	}
-	return blockingIds, nil
+	return blockIds, nil
+}
+
+func (_friendRepo FriendRepo) GetIdsBlockedByTarget(userId int) ([]int, error) {
+	query := `SELECT target FROM blocks WHERE requestor=$1`
+
+	var blockIds = make([]int, 0)
+	rows, err := _friendRepo.Db.Query(query, userId)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		blockIds = append(blockIds, id)
+	}
+	return blockIds, nil
 }
 
 func (_friendRepo FriendRepo) GetIdsSubscribers(userId int) ([]int, error) {

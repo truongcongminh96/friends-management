@@ -555,7 +555,7 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 		{
 			name: "validate request body failed - not enough email address",
 			requestBody: map[string]interface{}{
-				"friends": []string{"dao@gmail.com", ""},
+				"friends": []string{"andy@example.com", ""},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"your friend is required\"}\n",
 			expectedStatus:       http.StatusBadRequest,
@@ -564,14 +564,14 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "get first user id failed",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Bad request\",\"Message\":\"get user id failed\"}\n",
 			expectedStatus:       http.StatusInternalServerError,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 0,
 				err:    errors.New("get user id failed"),
 			},
@@ -580,14 +580,14 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "first email does not exist",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"the first email does not exist\"}\n",
 			expectedStatus:       http.StatusBadRequest,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 0,
 				err:    nil,
 			},
@@ -596,19 +596,19 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "get second user failed",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Bad request\",\"Message\":\"get user id failed\"}\n",
 			expectedStatus:       http.StatusInternalServerError,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 1,
 				err:    nil,
 			},
 			mockGetUserId2: mockGetUserIDByEmail{
-				input:  "mai@gmail.com",
+				input:  "john@example.com",
 				result: 0,
 				err:    errors.New("get user id failed"),
 			},
@@ -617,19 +617,19 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "second email does not exist",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":400,\"StatusText\":\"Bad request\",\"Message\":\"the second email does not exist\"}\n",
 			expectedStatus:       http.StatusBadRequest,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 1,
 				err:    nil,
 			},
 			mockGetUserId2: mockGetUserIDByEmail{
-				input:  "mai@gmail.com",
+				input:  "john@example.com",
 				result: 0,
 				err:    nil,
 			},
@@ -638,19 +638,19 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "get common friends failed",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
 			expectedResponseBody: "{\"Err\":{},\"StatusCode\":500,\"StatusText\":\"Internal server error\",\"Message\":\"get common friends failed\"}\n",
 			expectedStatus:       http.StatusInternalServerError,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 1,
 				err:    nil,
 			},
 			mockGetUserId2: mockGetUserIDByEmail{
-				input:  "mai@gmail.com",
+				input:  "john@example.com",
 				result: 2,
 				err:    nil,
 			},
@@ -664,23 +664,23 @@ func TestFriendHandlers_GetCommonFriends(t *testing.T) {
 			name: "get common friends successfully",
 			requestBody: map[string]interface{}{
 				"friends": []string{
-					"dao@gmail.com",
-					"mai@gmail.com",
+					"andy@example.com",
+					"john@example.com",
 				},
 			},
-			expectedResponseBody: "{\"success\":true,\"friends\":[\"thu@gmail.com\",\"mai@gmail.com\"],\"count\":2}\n",
+			expectedResponseBody: "{\"success\":true,\"friends\":[\"lisa@example.com\",\"john@example.com\"],\"count\":2}\n",
 			expectedStatus:       http.StatusOK,
 			mockGetUserId1: mockGetUserIDByEmail{
-				input:  "dao@gmail.com",
+				input:  "andy@example.com",
 				result: 1,
 			},
 			mockGetUserId2: mockGetUserIDByEmail{
-				input:  "mai@gmail.com",
+				input:  "john@example.com",
 				result: 2,
 			},
 			mockGetCommonFriends: mockGetCommonFriends{
 				input:  []int{1, 2},
-				result: []string{"thu@gmail.com", "mai@gmail.com"},
+				result: []string{"lisa@example.com", "john@example.com"},
 				err:    nil,
 			},
 		},

@@ -10,13 +10,8 @@ type MockUser struct {
 }
 
 func (_m *MockUser) GetEmailsByIDs(listFriendId []int) ([]string, error) {
-	args := _m.Called(listFriendId)
-	r0 := args.Get(0).([]string)
-	var r1 error
-	if args.Get(1) != nil {
-		r1 = args.Get(1).(error)
-	}
-	return r0, r1
+	returnArgs := _m.Called(listFriendId)
+	return returnArgs.Get(0).([]string), returnArgs.Error(1)
 }
 
 func (_m *MockUser) GetUserIDByEmail(email string) (int, error) {

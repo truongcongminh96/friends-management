@@ -61,7 +61,7 @@ func (_userRepo UserRepo) GetEmailsByIDs(listFriendId []int) ([]string, error) {
 	query := fmt.Sprintf(`SELECT email FROM users WHERE id in (%v)`, strings.Join(stringIDs, ","))
 	rows, err := _userRepo.Db.Query(query)
 
-	var emails []string
+	emails := make([]string, 0)
 
 	if err != nil {
 		return nil, err
