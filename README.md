@@ -1,6 +1,11 @@
 # friends-management
 A Restful API for simple Friends Management application with GO, using go-chi and testify 
 
+## API Documentation
+https://documenter.getpostman.com/view/3974024/TzJpjg6x
+
+#How to run
+
 For run docker-compose, run this commands in project's root folder:
 
 ```bash
