@@ -1,6 +1,25 @@
 # friends-management
 A Restful API for simple Friends Management application with GO, using go-chi and testify 
 
+For run docker-compose, run this commands in project's root folder:
+
+```bash
+docker-compose build
+docker-compose up
+```
+
+Or run local with Makefile:
+
+```bash
+make all
+```
+
+If you want to cross-compile your application to run on every OS:
+
+```bash
+make compile
+```
+
 ## REST Api
 ```sh
 1 User Registration: http://localhost:8080/api/v1/user
@@ -147,7 +166,7 @@ friends_management
 ├─ routes
 │  └─ routes.go
 ├─ service
-│  └─ block_service.go
+│  ├─ block_service.go
 │  ├─ block_service_mock.go
 │  ├─ block_service_test.go
 │  ├─ friend_service.go

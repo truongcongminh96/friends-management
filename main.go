@@ -44,8 +44,6 @@ func main() {
 	log.Printf("Started server on %s", PORT)
 	ch := make(chan os.Signal, 1)
 
-	// https://tour.golang.org/concurrency/1
-	// https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html
 	/* The API server is started on a separate goroutine and keeps running until it receives a SIGINT or SIGTERM
 	   signal after which it calls the Stop function to clean up and shut down the server. */
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
