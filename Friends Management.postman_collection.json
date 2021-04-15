@@ -6,33 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "Get all users",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/user_list",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"user_list"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Register User",
 			"request": {
 				"method": "POST",
@@ -45,10 +18,15 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \"email\": \"d@gmail.com\"}"
+					"raw": "{\r\n    \"email\": \"andy@example.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/registration",
+					"raw": "http://localhost:8080/api/v1/user",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -57,7 +35,7 @@
 					"path": [
 						"api",
 						"v1",
-						"registration"
+						"user"
 					]
 				}
 			},
@@ -76,10 +54,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example\",\r\n        \"john@example\"\r\n    ]\r\n}"
+					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"kate@example.com\",\r\n        \"john@example.com\"\r\n    ]\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/friendConnection",
+					"raw": "http://localhost:8080/api/v1/friend",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -88,7 +66,7 @@
 					"path": [
 						"api",
 						"v1",
-						"friendConnection"
+						"friend"
 					]
 				}
 			},
@@ -101,7 +79,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \"email\": \"andy@example\"}",
+					"raw": "{ \"email\": \"john@example.com\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -109,7 +87,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/retrieveFriendList",
+					"raw": "http://localhost:8080/api/v1/friend/friends-list",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -118,7 +96,8 @@
 					"path": [
 						"api",
 						"v1",
-						"retrieveFriendList"
+						"friend",
+						"friends-list"
 					]
 				}
 			},
@@ -137,7 +116,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"a@gmail.com\",\r\n        \"b@gmail.com\"\r\n ]\r\n}",
+					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"kate@example.com\",\r\n        \"john@example.com\"\r\n ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -145,7 +124,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/commonFriends",
+					"raw": "http://localhost:8080/api/v1/friend/common-friends",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -154,7 +133,8 @@
 					"path": [
 						"api",
 						"v1",
-						"commonFriends"
+						"friend",
+						"common-friends"
 					]
 				}
 			},
@@ -167,7 +147,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"andy@example\",\r\n \"target\": \"lisa@example\"\r\n}",
+					"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -197,7 +177,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"kate@example\",\r\n \"target\": \"common@example.com\"\r\n}",
+					"raw": "{\r\n \"requestor\": \"john@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -205,7 +185,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/blockFriend",
+					"raw": "http://localhost:8080/api/v1/block",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -214,7 +194,7 @@
 					"path": [
 						"api",
 						"v1",
-						"blockFriend"
+						"block"
 					]
 				}
 			},
@@ -227,7 +207,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{   \r\n \"sender\": \"e@gmail.com\",\r\n \"text\": \"Hello World! b@gmail.com\"\r\n}",
+					"raw": "{   \r\n \"sender\": \"john@example.com\",\r\n \"text\": \"Hello World! andy@example.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -235,7 +215,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/receiveUpdates",
+					"raw": "http://localhost:8080/api/v1/friend/receive-updates",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -244,7 +224,8 @@
 					"path": [
 						"api",
 						"v1",
-						"receiveUpdates"
+						"friend",
+						"receive-updates"
 					]
 				}
 			},

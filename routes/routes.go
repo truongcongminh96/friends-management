@@ -20,6 +20,7 @@ var dbInstance Database
 
 func NewHandler(db database.Database) http.Handler {
 	router := chi.NewRouter()
+	router.Use(commonMiddleware)
 	dbInstance = Database(db)
 	router.MethodNotAllowed(handlers.MethodNotAllowedHandler)
 	router.NotFound(handlers.NotFoundHandler)
@@ -97,5 +98,12 @@ func createRoutes(router chi.Router) {
 			},
 		}
 		r.MethodFunc(http.MethodPost, "/", blockHandlers.CreateBlock)
+	})
+}
+
+func commonMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
 	})
 }
