@@ -22,7 +22,7 @@ func TestBlockRepositories_CreateBlock(t *testing.T) {
 				Target:    5,
 			},
 			expectedError: errors.New("pq: insert or update on table \"blocks\" violates foreign key constraint \"blocks_target_fkey\""),
-			fixturePath:   "./testdata/blocking/blocking.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 		{
 			name: "insert block successfully",
@@ -31,7 +31,7 @@ func TestBlockRepositories_CreateBlock(t *testing.T) {
 				Target:    4,
 			},
 			expectedError: nil,
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 	}
 

@@ -1,8 +1,5 @@
 # friends-management
-
-user: postgres
-
-db: friends-management
+A Restful API for simple Friends Management application with GO, using go-chi and testify 
 
 ## REST Api
 ```sh
@@ -101,9 +98,80 @@ From the terminal:
 go test -v
 
 ## Project Architecture
-- 3 layers model:
-    + Handlers: receive request, validate request and response
-    + Services: handle business logics
-    + Repositories: interact with database
+
+
+```bash
+friends_management
+├─ database
+│  └─ database_connect.go
+├─ handlers
+│  ├─ block.go
+│  ├─ block_test.go
+│  ├─ errors.go
+│  ├─ friend.go
+│  ├─ friend_test.go
+│  ├─ subscribe.go
+│  ├─ subscribe_test.go
+│  ├─ user.go
+│  └─ user_test.go
+├─ helper
+│  ├─ connectDb.go
+│  ├─ fixture.go
+│  └─ utils.go
+├─ initilization
+│  └─ DBTable.go
+├─ models
+│  ├─ block.go
+│  ├─ friend.go
+│  ├─ subscribe.go
+│  └─ user.go
+├─ repositories
+│  ├─ test_migration
+│  │  ├─ block
+│  │  │  └─ block.sql
+│  │  ├─ friend
+│  │  │  └─ friend.sql
+│  │  ├─ subscribe
+│  │  │  └─ subscribe.sql
+│  │  ├─ user
+│  │  │  └─ user.sql
+│  │  └─ truncate_table.go
+│  ├─ block.go
+│  ├─ block_test.go
+│  ├─ friend.go
+│  ├─ friend_test.go
+│  ├─ subscribe.go
+│  ├─ subscribe_test.go
+│  ├─ user.go
+│  └─ user_test.go
+├─ routes
+│  └─ routes.go
+├─ service
+│  └─ block_service.go
+│  ├─ block_service_mock.go
+│  ├─ block_service_test.go
+│  ├─ friend_service.go
+│  ├─ friend_service_mock.go
+│  ├─ friend_service_test.go
+│  ├─ subscribe_service.go
+│  ├─ subscribe_service_mock.go
+│  ├─ subscribe_service_test.go
+│  ├─ user_service.go
+│  ├─ user_servgice_mock.go
+│  └─ user_service_test.go
+├─ .env
+├─ docker-compose.yml
+├─ Dockerfile
+├─ go.mod
+│  └─ go.sum
+├─ main.go
+├─ Makerfile.md
+└─ README.md
+
+```
 
 - Workflow: Request => Handlers => Services => Repositories => DB
+
+#Note
+	 https://tour.golang.org/concurrency/1
+	 https://www.gnu.org/software/libc/manual/html_node/Termination-Signals.html

@@ -23,7 +23,7 @@ func TestSubscribeRepositories_CreateSubscribe(t *testing.T) {
 				Target:    5,
 			},
 			expectedError: errors.New("pq: insert or update on table \"subscribe\" violates foreign key constraint \"subscribe_target_fkey\""),
-			fixturePath:   "./testdata/subscribe/subscribe.sql",
+			fixturePath:   "./test_migration/subscribe/subscribe.sql",
 		},
 		{
 			name: "insert subscribe successfully",
@@ -32,7 +32,7 @@ func TestSubscribeRepositories_CreateSubscribe(t *testing.T) {
 				Target:    4,
 			},
 			expectedError: nil,
-			fixturePath:   "./testdata/subscribe/subscribe.sql",
+			fixturePath:   "./test_migration/subscribe/subscribe.sql",
 		},
 	}
 
@@ -79,7 +79,7 @@ func TestSubscribeRepositories_IsExistedSubscribe(t *testing.T) {
 			expectedValue: true,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/subscribe/subscribe.sql",
+			fixturePath:   "./test_migration/subscribe/subscribe.sql",
 		},
 		{
 			name:          "subscribe does not exist",
@@ -87,7 +87,7 @@ func TestSubscribeRepositories_IsExistedSubscribe(t *testing.T) {
 			expectedValue: false,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/subscribe/subscribe.sql",
+			fixturePath:   "./test_migration/subscribe/subscribe.sql",
 		},
 	}
 
@@ -134,7 +134,7 @@ func TestSubscribeRepositories_IsBlockedByUser(t *testing.T) {
 			expectedValue: true,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 		{
 			name:          "is not blocked",
@@ -142,7 +142,7 @@ func TestSubscribeRepositories_IsBlockedByUser(t *testing.T) {
 			expectedValue: false,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 	}
 

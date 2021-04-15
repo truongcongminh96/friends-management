@@ -23,7 +23,7 @@ func TestFriendRepositories_CreateFriend(t *testing.T) {
 				User2: 2,
 			},
 			expectedError: errors.New("pq: duplicate key value violates unique constraint \"unique_friends_user1_user2\""),
-			fixturePath:   "./testdata/friend/friend.sql",
+			fixturePath:   "./test_migration/friend/friend.sql",
 		},
 		{
 			name: "insert friend successfully",
@@ -32,7 +32,7 @@ func TestFriendRepositories_CreateFriend(t *testing.T) {
 				User2: 4,
 			},
 			expectedError: nil,
-			fixturePath:   "./testdata/friend/friend.sql",
+			fixturePath:   "./test_migration/friend/friend.sql",
 		},
 	}
 
@@ -79,7 +79,7 @@ func TestFriendRepositories_IsExistedFriend(t *testing.T) {
 			expectedValue: true,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/friend/friend.sql",
+			fixturePath:   "./test_migration/friend/friend.sql",
 		},
 		{
 			name:          "friend connection does not exist",
@@ -87,7 +87,7 @@ func TestFriendRepositories_IsExistedFriend(t *testing.T) {
 			expectedValue: false,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/friend/friend.sql",
+			fixturePath:   "./test_migration/friend/friend.sql",
 		},
 	}
 
@@ -134,7 +134,7 @@ func TestFriendRepositories_IsBlockedByUser(t *testing.T) {
 			expectedValue: true,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 		{
 			name:          "is not blocked by the other one",
@@ -142,7 +142,7 @@ func TestFriendRepositories_IsBlockedByUser(t *testing.T) {
 			expectedValue: false,
 			expectedError: nil,
 			mockDb:        helper.ConnectDb(),
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 		},
 	}
 
@@ -188,7 +188,7 @@ func TestFriendRepositories_GetListFriendId(t *testing.T) {
 			input:         2,
 			expectedValue: []int{1, 3},
 			expectedError: nil,
-			fixturePath:   "./testdata/friend/friend.sql",
+			fixturePath:   "./test_migration/friend/friend.sql",
 			mockDb:        helper.ConnectDb(),
 		},
 	}
@@ -235,7 +235,7 @@ func TestFriendRepositories_GetIdsBlockedUsers(t *testing.T) {
 			input:         1,
 			expectedValue: []int{},
 			expectedError: nil,
-			fixturePath:   "./testdata/block/block.sql",
+			fixturePath:   "./test_migration/block/block.sql",
 			mockDb:        helper.ConnectDb(),
 		},
 	}
@@ -284,7 +284,7 @@ func TestFriendRepositories_GetIdsSubscribers(t *testing.T) {
 			input:         2,
 			expectedValue: []int{1},
 			expectedError: nil,
-			fixturePath:   "./testdata/subscribe/subscribe.sql",
+			fixturePath:   "./test_migration/subscribe/subscribe.sql",
 			mockDb:        helper.ConnectDb(),
 		},
 	}

@@ -21,7 +21,7 @@ func TestUserRepositories_CreateUser(t *testing.T) {
 				Email: "andy@example",
 			},
 			expectedError: errors.New("pq: duplicate key value violates unique constraint \"unique_user_email\""),
-			fixturePath:   "./testdata/user/user.sql",
+			fixturePath:   "./test_migration/user/user.sql",
 		},
 		{
 			name: "insert user successfully",
@@ -29,7 +29,7 @@ func TestUserRepositories_CreateUser(t *testing.T) {
 				Email: "kate@example",
 			},
 			expectedError: nil,
-			fixturePath:   "./testdata/truncate_table.sql",
+			fixturePath:   "./test_migration/truncate_table.sql",
 		},
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 const (
@@ -16,14 +17,19 @@ type Database struct {
 	Conn *sql.DB
 }
 
-func ConnectDB(username, password, database string) (Database, error) {
+func ConnectDB() (Database, error) {
+	var (
+		username = os.Getenv("POSTGRES_USER")
+		password = os.Getenv("POSTGRES_PASSWORD")
+		database = os.Getenv("POSTGRES_DB")
+	)
+
 	db := Database{}
 
 	dataInfo := fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
 		username, password, HOST, PORT, database)
 
 	conn, err := sql.Open("postgres", dataInfo)
-	fmt.Println(conn, err)
 
 	if err != nil {
 		return db, err
