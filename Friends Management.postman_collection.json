@@ -39,7 +39,170 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Register User Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"andy@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:15:35 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "17"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "Error Register User: email address exists",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"andy@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"status": "Already Reported",
+					"code": 208,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:16:53 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "88"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 208,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"email address exists\"\n}"
+				},
+				{
+					"name": "Error Register User: format is not valid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"andy\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:17:33 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"\\\"email\\\"'s format is not valid. (ex: \\\"andy@example\\\")\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Create Friend Connection",
@@ -54,7 +217,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"kate@example.com\",\r\n        \"john@example.com\"\r\n    ]\r\n}"
+					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example.com\"\r\n    ]\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/api/v1/friend",
@@ -70,7 +233,342 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Create Friend Connection Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example.com\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": null,
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: user already friend",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example.com\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Already Reported",
+					"code": 208,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:20:13 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "83"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 208,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"you are friends\"\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: email connect does not exists",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:21:11 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "100"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"your friend email does not exist\"\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: your user does not exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example\",\r\n        \"john@example.com\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:22:23 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "93"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"your email does not exist\"\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: email format is not valid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john.com\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:23:07 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"\\\"email\\\"'s format is not valid. (ex: \\\"andy@example\\\")\"\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: user block there target",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"kate@example.com\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Precondition Failed",
+					"code": 412,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:27:32 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "92"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 412,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"You are block the target\"\n}"
+				},
+				{
+					"name": "Create Friend Connection Fail: user has blocked by target",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"john@example.com\",\r\n        \"kate@example.com\"\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend"
+							]
+						}
+					},
+					"status": "Precondition Failed",
+					"code": 412,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:29:31 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "91"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 412,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"You are block by target\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Get List Friend",
@@ -79,7 +577,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{ \"email\": \"john@example.com\"}",
+					"raw": "{ \"email\": \"andy@example.com\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -101,7 +599,155 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Get List Friend Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"email\": \"andy@example.com\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/friends-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"friends-list"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:32:04 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "77"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"friends\": [\n        \"john@example.com\",\n        \"lisa@example.com\"\n    ],\n    \"count\": 2\n}"
+				},
+				{
+					"name": "Get List Friend Fail: user does not exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"email\": \"andy@example\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/friends-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"friends-list"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:32:29 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "88"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"email does not exist\"\n}"
+				},
+				{
+					"name": "Get List Friend Fail: email format is not valid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"email\": \"andy@\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/friends-list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"friends-list"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:32:49 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"\\\"email\\\"'s format is not valid. (ex: \\\"andy@example\\\")\"\n}"
+				}
+			]
 		},
 		{
 			"name": "get common friends",
@@ -116,7 +762,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"kate@example.com\",\r\n        \"john@example.com\"\r\n ]\r\n}",
+					"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example.com\"\r\n ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -138,7 +784,228 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "get common friends Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example.com\"\r\n ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/common-friends",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"common-friends"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:34:33 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "58"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"friends\": [\n        \"lisa@example.com\"\n    ],\n    \"count\": 1\n}"
+				},
+				{
+					"name": "get common friends Fail : email format is not valid",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john\"\r\n ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/common-friends",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"common-friends"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:34:59 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "123"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"\\\"email\\\"'s format is not valid. (ex: \\\"andy@example\\\")\"\n}"
+				},
+				{
+					"name": "get common friends Fail: the second email does not exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example.com\",\r\n        \"john@example\"\r\n ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/common-friends",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"common-friends"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:35:31 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "99"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"the second email does not exist\"\n}"
+				},
+				{
+					"name": "get common friends Fail: the first email does not exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"friends\":\r\n    [\r\n        \"andy@example\",\r\n        \"john@example.com\"\r\n ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/common-friends",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"common-friends"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:36:08 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "98"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"the first email does not exist\"\n}"
+				}
+			]
 		},
 		{
 			"name": "create subscribe",
@@ -147,7 +1014,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}\r\n",
+					"raw": "{\r\n \"requestor\": \"andy@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -168,7 +1035,152 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "create subscribe success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/subscribe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"subscribe"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:36:48 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "17"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "create subscribe fail : user block the target",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"requestor\": \"andy@example.com\",\r\n \"target\": \"kate@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/subscribe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"subscribe"
+							]
+						}
+					},
+					"status": "Precondition Failed",
+					"code": 412,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:37:39 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "92"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 412,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"You are block the target\"\n}"
+				},
+				{
+					"name": "create subscribe fail: user has blocked by target",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"andy@example.com\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/subscribe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"subscribe"
+							]
+						}
+					},
+					"status": "Precondition Failed",
+					"code": 412,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:38:07 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "91"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 412,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"You are block by target\"\n}"
+				}
+			]
 		},
 		{
 			"name": "create block friend",
@@ -177,7 +1189,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n \"requestor\": \"john@example.com\",\r\n \"target\": \"lisa@example.com\"\r\n}",
+					"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"john@example.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -198,7 +1210,104 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "create block user Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"requestor\": \"andy@example.com\",\r\n \"target\": \"kate@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/block",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"block"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:26:55 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "17"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true\n}"
+				},
+				{
+					"name": "create block friend Fail: user has blocked the target",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"requestor\": \"kate@example.com\",\r\n \"target\": \"john@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/block",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"block"
+							]
+						}
+					},
+					"status": "Already Reported",
+					"code": 208,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:30:25 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "92"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 208,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"you are block the target\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Receive Updates",
@@ -207,7 +1316,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{   \r\n \"sender\": \"john@example.com\",\r\n \"text\": \"Hello World! andy@example.com\"\r\n}",
+					"raw": "{   \r\n \"sender\": \"kate@exampl.com\",\r\n \"text\": \"Hello World! john@example.com\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -229,7 +1338,106 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "Receive Updates Success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n \"sender\": \"john@example.com\",\r\n \"text\": \"Hello World! andy@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/receive-updates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"receive-updates"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:38:54 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "70"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"success\": true,\n    \"recipients\": [\n        \"andy@example.com\",\n        \"lisa@example.com\"\n    ]\n}"
+				},
+				{
+					"name": "Receive Updates Fail : the sender does not exist",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n \"sender\": \"kate@exampl.com\",\r\n \"text\": \"Hello World! john@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/friend/receive-updates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"friend",
+								"receive-updates"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 15 Apr 2021 08:50:41 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "93"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Err\": {},\n    \"StatusCode\": 400,\n    \"StatusText\": \"Bad request\",\n    \"Message\": \"the sender does not exist\"\n}"
+				}
+			]
 		}
 	]
 }
